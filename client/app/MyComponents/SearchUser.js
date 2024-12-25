@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { RiUserSearchLine } from "react-icons/ri";
 import UserSearchCard from "./UserSearchCard";
 import toast from "react-hot-toast";
@@ -13,7 +13,7 @@ export default function SearchUser({onClose}) {
   const [loading, setLoading] = useState(false);
   const [search,setSearch] = useState("")
 
-    const handleSearchUser = async (e)=> {
+    const handleSearchUser = useCallback(async (e)=> {
         const URL = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/search-user`;
         try {
             setLoading(true)
@@ -27,10 +27,10 @@ export default function SearchUser({onClose}) {
         } catch (error) {
             toast.error(error?.response?.data?.message)
         }
-    }
+    },[search]);
     useEffect(()=>{
         handleSearchUser()
-    },[search])
+    })
 
     console.log("searchUser",searchUser)
 

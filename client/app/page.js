@@ -4,6 +4,7 @@ import Navbar from "./MyComponents/Navbar";
 import { FaUserPlus } from "react-icons/fa";
 import { MdMessage } from "react-icons/md";
 import Spline from "@splinetool/react-spline";
+import Image from "next/image";
 
 export default function Home() {
  
@@ -29,7 +30,7 @@ export default function Home() {
       />  */}
           <div className="relative z-10">
             <div className="flex justify-center items-center" >
-              <img src="logo.svg" alt="logo" className="w-32 lg:w-[250px]" />
+              <Image src="logo.svg" alt="logo" className="w-32 lg:w-[250px]" height={50} width={50}/>
             </div>
             <p className="text-lg flex gap-3 justify-center items-center lg:text-2xl text-slate-400">
               Find People to send message <FaUserPlus className="

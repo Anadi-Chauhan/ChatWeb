@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { FaUserCircle } from "react-icons/fa";
 import { useSelector } from "react-redux";
 
@@ -34,7 +35,7 @@ export default function Avatar({ userId, name, imageUrl, width, height }) {
       <div   className="overflow-hidden rounded-full w-full h-full flex justify-center items-center"
         style={{ width: width + "px", height: height + "px" }} >
       {imageUrl ? (
-        <img
+        <Image
           src={imageUrl}
           width={width}
           height={height}

@@ -75,7 +75,7 @@ export default function VerifyOtp() {
   return (
     <div className="flex flex-col justify-center items-center">
       <p>
-        Enter the <b>OTP</b> sent to your email "<b>{email}</b>".{" "}
+        Enter the <b>OTP</b> sent to your email <b>{email}</b>.
         <b>To Verify!</b>
       </p>
       <div className="bg-[rgba(66,89,67,1)] text-white rounded-t-lg mt-2 shadow-lg px-10 py-4 w-full max-w-md min-w-[26rem] relative">

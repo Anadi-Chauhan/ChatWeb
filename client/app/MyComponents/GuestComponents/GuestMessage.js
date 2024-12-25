@@ -9,7 +9,7 @@ import GNavLink from "../GlobalNavlink";
 import IVSender from "../MessagePageComponents/IVSender";
 import BackgroundChanger from "../MessagePageComponents/BackgroundChange";
 import EmojiPickerComponet from "../MessagePageComponents/EmojiPicker";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import moment from "moment";
 import { useDispatch, useSelector } from "react-redux";
 import { getSocket } from "@/lib/socket";
@@ -50,7 +50,7 @@ export default function GuestMessage() {
     return () => {
       socket.off("onlineUser");
     };
-  }, []);
+  }, [socketConnection,dispatch]);
 
   useEffect(() => {
     if (currentMessage.current) {
@@ -87,7 +87,7 @@ export default function GuestMessage() {
       }
     }
   };
-  const fetchUserDetails = async () => {
+  const fetchUserDetails = useCallback(async () => {
     try {
       const URL = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user-details`;
       const response = await axios({
@@ -109,11 +109,11 @@ export default function GuestMessage() {
     } catch (error) {
       console.log("Error:", error);
     }
-  };
-
+  },[dispatch,router,user]);
   useEffect(() => {
     fetchUserDetails();
-  }, []);
+  });
+
 
   const handleOnChange = (e) => {
     const { name, value } = e.target;
@@ -158,7 +158,7 @@ export default function GuestMessage() {
               <MdOutlineArrowBackIosNew size={16} />
             </Link>
             <div className="w-24 flex justify-center">
-              <Image src="/logo.svg" width={60} height={60} />
+              <Image src="/logo.svg" width={60} height={60} alt="" />
             </div>
             <div className="flex items-center justify-center ml-4">
               <Avatar width={30} height={30} />

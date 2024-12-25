@@ -48,7 +48,7 @@ export default function Terms() {
           Our website can be used in any country in the world provided you are
           able to connect. Some countries such as Iran or Pakistan have been
           known to block this website for whatever reason. We do not allow the
-          use of VPN's as they cause more trouble than not.
+          use of VPNs as they cause more trouble than not
         </p>
         </div>
         <h2 className="text-2xl font-semibold font-roboto mt-4">
@@ -62,9 +62,9 @@ export default function Terms() {
           This also obviously applies to anyone posting illegal underage or
           child material. You will risk receiving a permanent ban and referral
           to law enforcement if you post content or material that can be
-          classified as such including profile and background photos. We will
+          classified as such including profile and background photos We will
           make sure you are prosecuted to the fullest extent of the law and
-          assist law enforcement agencies in any way to identify you.
+          assist law enforcement agencies in any way to identify you
         </p>
         </div>
         <h2 className="text-2xl font-semibold font-roboto mt-4">

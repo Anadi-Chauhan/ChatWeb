@@ -101,7 +101,7 @@ export default function MessagePage() {
 
   useEffect(() => {
     fetchUserDetails();
-  }, []);
+  });
 
   // Socket connection
   useEffect(() => {
@@ -118,7 +118,7 @@ export default function MessagePage() {
     return () => {
       socket.off("onlineUser");
     };
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     if (currentMessage.current) {
@@ -221,7 +221,7 @@ export default function MessagePage() {
     socketConnection.on("called-user", () => {
       setCalled(true);
     });
-  }, [call]);
+  }, [call,socketConnection]);
 
   const handleCallUser = () => {
     // setupMedia();
