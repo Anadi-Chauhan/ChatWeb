@@ -18,6 +18,11 @@ const messageSchema = new mongoose.Schema({
         required : true,
         ref : 'User'
     },
+    recieverUserId : {
+        type : mongoose.Schema.ObjectId,
+        required : true,
+        ref : 'User'
+    },
     seen : {
          type : Boolean,
         default : false
@@ -48,10 +53,12 @@ const conversationSchema = new mongoose.Schema({
 })
 
 
+
+
 const MessageModel = mongoose.model("Message",messageSchema)
 const ConversationModel = mongoose.model("Conversation",conversationSchema)
 
 module.exports = {
     MessageModel,
-    ConversationModel
+    ConversationModel,
 }

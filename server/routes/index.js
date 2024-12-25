@@ -1,11 +1,11 @@
 const express = require('express')
 const registerUser = require('../controller/registerUser')
-const checkEmail = require('../controller/checkEmail')
-const checkPassword = require('../controller/checkPassword')
 const userDetails = require('../controller/userDetails')
 const logout = require('../controller/logout')
 const updateUserDetails = require('../controller/updateUserDetails')
 const searchUser = require('../controller/searchUser')
+const verifyOtp = require('../controller/VerifyOtp')
+const guestAccountVerification = require('../controller/guestAccount')
 
 const router = express.Router()
 
@@ -13,9 +13,7 @@ const router = express.Router()
 
 router.post('/register',registerUser)
 
-router.post('/email',checkEmail)
-
-router.post('/password',checkPassword)
+router.post('/verify-otp',verifyOtp)
 
 router.get("/user-details",userDetails)
 
@@ -24,5 +22,8 @@ router.get('/logout',logout)
 router.post('/update-user',updateUserDetails)
 
 router.post('/search-user',searchUser)
+
+router.post('/guest-user',guestAccountVerification)
+
 
 module.exports = router

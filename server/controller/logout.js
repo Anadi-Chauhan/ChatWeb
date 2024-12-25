@@ -1,14 +1,16 @@
 async function logout(request,response) {
     try {
-
+        
         const cookieOption = {
-            http : true,
-            secure : true
+            httpOnly : true,
+            sameSite: 'Strict',
+            secure : true,
+            path:"/",
         }
-
-        return response.cookie("token","",cookieOption).status(200).json({
+        return response.clearCookie("token",cookieOption).status(200).json({
             message : "Session out",
-            success : true
+            success : true,
+            
         })
 
         
