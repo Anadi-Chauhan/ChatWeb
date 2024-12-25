@@ -1,4 +1,4 @@
-export default function Loading({bg}) {
+export default function LoadingStyle({bg}) {
   return (
     <>
       <div className={`flex space-x-2 justify-center items-center ${bg}`}>

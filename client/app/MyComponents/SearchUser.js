@@ -2,11 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { RiUserSearchLine } from "react-icons/ri";
-import Loading from "./Loader";
 import UserSearchCard from "./UserSearchCard";
 import toast from "react-hot-toast";
 import axios from "axios";
 import { ImCross } from "react-icons/im";
+import LoadingStyle from "./Loader";
 
 export default function SearchUser({onClose}) {
   const [searchUser, setSearchUser] = useState([]);
@@ -37,7 +37,7 @@ export default function SearchUser({onClose}) {
   return (
     <>
     
-      <div className="fixed bg-gray-700 bg-opacity-40 top-0 bottom-0 right-0 left-0 z-10 ">
+      <div className="fixed bg-gray-700 bg-opacity-40 top-0 bottom-0 right-0 left-12 z-10 ">
       <button onClick={onClose}  className="text-red-600 float-end p-4" ><ImCross size={25} /></button>
         <div className="w-full max-w-lg mx-auto mt-8">
           <div className="bg-white rounded h-12 overflow-hidden flex">
@@ -52,14 +52,14 @@ export default function SearchUser({onClose}) {
               <RiUserSearchLine size={25} />
             </div>
           </div>
-          <div className="bg-white mt-2 w-full p-4">
+          <div className="bg-slate-300 h-[70vh] overflow-x-hidden overflow-y-scroll custom-scrollbar mt-2 w-full p-4">
             {searchUser.length === 0 && !loading && (
               <p className="text-center text-slate-500">No User Found!</p>
             )}
 
             {loading && (
               <div className="text-center">
-                <Loading />
+                <LoadingStyle />
               </div>
             )}
             {

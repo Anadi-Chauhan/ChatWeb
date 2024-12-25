@@ -3,18 +3,18 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-const NavLink = ({ href, children, className }) => {
+const GNavLink = ({ href, children, className }) => {
   const pathname = usePathname();
   const isActive = pathname === href;
 
   return (
     <Link
       href={href}
-      className={`${className} ${isActive ? 'bg-slate-700' : '' }`}
+      className={`${className} ${isActive ? 'text-blue-500' : '' }`}
     >
       {children}
     </Link>
   );
 };
 
-export default NavLink;
+export default GNavLink;

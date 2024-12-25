@@ -1,14 +1,15 @@
 "use client";
 
-import React from "react";
-import Link from "next/link";
-import { useState } from "react";
+import React, { useState } from "react";
 import { IoClose } from "react-icons/io5";
 import { BiRightArrowAlt } from "react-icons/bi";
 import uploadFile from "../Components/helpers/uploadFile";
 import axios from "axios";
-import { toast } from 'sonner'
-import { useRouter} from "next/navigation";
+import { toast } from "sonner";
+import { FiUpload } from "react-icons/fi";
+import Link from "next/link";
+import Navbar from "../MyComponents/Navbar";
+import { useRouter } from "next/navigation";
 
 export default function RegisterPage() {
   const [data, setData] = useState({
@@ -19,30 +20,24 @@ export default function RegisterPage() {
   });
 
   const [uploadPhoto, setUploadPhoto] = useState("");
-  const router = useRouter()
+  const router=useRouter()
 
   const handleUploadPhoto = async (e) => {
     const file = e.target.files[0];
-
-    const uploadPhoto = await uploadFile(file)
+    const uploadPhoto = await uploadFile(file);
     setUploadPhoto(file);
-    setData((prevs)=>{
-      return{
-        ...prevs,
-        profile_pic : uploadPhoto?.url
-      }
-    })
+    setData((prevs) => ({
+      ...prevs,
+      profile_pic: uploadPhoto?.url,
+    }));
   };
 
   const onHandleChange = (e) => {
     const { name, value } = e.target;
-
-    setData((prevs) => {
-      return {
-        ...prevs,
-        [name]: value,
-      };
-    });
+    setData((prevs) => ({
+      ...prevs,
+      [name]: value,
+    }));
   };
 
   const handleClearUploadPhoto = () => {
@@ -52,23 +47,20 @@ export default function RegisterPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     e.stopPropagation();
+    
     const URL = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/register`;
-  
-    try {
-      const response = await axios.post(URL,data,{
-          headers: {
-              "Content-Type": "application/json"
-          }
-      });
-      
-      console.log("response", response);
 
-      
+    try {
+      const response = await axios.post(URL, data, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
       if (response.data.success) {
-        
-        sessionStorage.setItem('name', data.name);
-        sessionStorage.setItem('profile_pic', data.profile_pic);
-        sessionStorage.setItem('email', data.email);
+        sessionStorage.setItem("name", data.name);
+        sessionStorage.setItem("profile_pic", data.profile_pic);
+        sessionStorage.setItem("email", data.email);
         toast.success(response.data.message);
         setData({
           name: "",
@@ -76,105 +68,152 @@ export default function RegisterPage() {
           password: "",
           profile_pic: "",
         });
-        router.push('/check-email');
       } else {
-        toast.error('User not created. Please try again.');
+        toast.error("User not created. Please try again.");
       }
-  
     } catch (error) {
       toast.error(error?.response?.data?.message);
     }
-  
-    console.log('data', data);
+    router.push("/verify")
   };
+
   return (
     <>
-      <div className="mt-5 grid justify-center">
-        <div className="bg-white max-w-sm rounded mx-2 overflow-hidden p-4">
-          <h3>Welcome to Infinity Chat!</h3>
-
-          <form className="grid gap-4 mt-3" onSubmit={handleSubmit}>
-            <div className="flex flex-col gap-2">
-              <label htmlFor="name">Name</label>
-              <input
-                type="text"
-                id="name"
-                name="name"
-                placeholder="Enter your name"
-                className="bg-slate-50 px-2 py-1 focus:outline-primary overflow-hidden"
-                value={data.name}
-                onChange={onHandleChange}
-                required
-              />
-            </div>
-            <div className="flex flex-col gap-2">
-              <label htmlFor="email">Email</label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                placeholder="Enter your email"
-                className="bg-slate-50 px-2 py-1 focus:outline-primary overflow-hidden"
-                value={data.email}
-                onChange={onHandleChange}
-                required
-              />
-            </div>
-            <div className="flex flex-col gap-2">
-              <label htmlFor="password">Passworrd</label>
-              <input
-                type="password"
-                id="password"
-                name="password"
-                placeholder="Enter your password"
-                className="bg-slate-50 px-2 py-1 focus:outline-primary overflow-hidden"
-                value={data.password}
-                onChange={onHandleChange}
-                required
-              />
-            </div>
-            <div className="flex flex-col gap-2">
-              <label htmlFor="profile_pic">
-                Profile Pic
-                <div className="h-10 bg-slate-50 flex justify-center items-center border rounded hover:border-primary cursor-pointer">
-                  <p className="text-sm max-w-sm overflow-hidden text-ellipsis line-clamp-1">
-                    {uploadPhoto?.name
-                      ? uploadPhoto?.name
-                      : "Upload profile pic"}
-                  </p>
-                  {uploadPhoto?.name && (
-                    <button
-                      className="text-lg ml-2  hover:text-red-500"
-                      onClick={handleClearUploadPhoto}
-                    >
-                      <IoClose />
-                    </button>
-                  )}
+      <div className="flex flex-col min-h-screen bg-black">
+        <div className="absolute w-full h-full bg-no-repeat bg-cover bg-center opacity-25 bg-[url('/11.webp')]"></div>
+        <div className="absolute top-4 right-4 sm:right-6">
+         <Navbar />
+        </div>
+        <div className="grid flex-grow items-center  justify-center">
+              <div className="relative shadow-[rgba(132,197,135,0.1)]  shadow-2xl bg-[rgba(66,89,67,1)] text-white rounded-l p-6 sm:p-8 lg:p-10 max-w-md w-full">
+                <div className="mb-6">
+                  <h1 className="text-lg font-bold">
+                    Welcome To Infinity Chat...
+                  </h1>
                 </div>
-              </label>
-              <input
-                type="file"
-                id="profile_pic"
-                name="profile_pic"
-                className="bg-slate-50 px-2 py-1 focus:outline-primary overflow-hidden hidden"
-                onChange={handleUploadPhoto}
-              />
-            </div>
-            <center>
-              <button className="bg-primary px-4 py-1 hover:bg-secondry text-white w-1/2 tracking-wide leading-relaxed rounded-md mt-2 font-bold">
-                Register
-              </button>
-            </center>
-          </form>
-          <p className="text-red-600 mt-3 ml-11 flex ">
-            Already have an account?{" "}
-            <Link className="text-blue-800 ml-2 flex font-bold" href="/check-email">
-              LogIn
-              <BiRightArrowAlt className="mt-[0.3rem] font-bold" />
-            </Link>
-          </p>
+                <div className="mb-6">
+                  <p className="text-sm uppercase tracking-wide mb-2">
+                    Join for free
+                  </p>
+                  <h2 className="text-2xl font-bold">Create new account.</h2>
+                  <p className="text-sm mt-2 flex gap-1">
+                    Already a Member?
+                    <button
+                      onClick={() => setShowEmail(true)}
+                      className="text-red-400 hover:underline flex items-center"
+                    >
+                      Log in <BiRightArrowAlt size={20} />
+                    </button>
+                  </p>
+                </div>
+                <form className="space-y-4" onSubmit={handleSubmit}>
+                  <div>
+                    <label htmlFor="name">Name</label>
+                    <div className="flex gap-4 mt-2 flex-col sm:flex-row">
+                      <input
+                        type="text"
+                        id="first-name"
+                        name="name"
+                        value={data.value}
+                        onChange={onHandleChange}
+                        placeholder="First name"
+                        required
+                        className="placeholder-slate-500 w-full sm:w-1/2 text-black bg-[#fffbfba8] text-sm border border-gray-700 rounded-lg px-4 py-2 focus:outline-none focus:ring focus:ring-green-600"
+                      />
+                      <input
+                        type="text"
+                        id="name"
+                        name="last-name"
+                        value={data.value}
+                        onChange={onHandleChange}
+                        placeholder="Last name"
+                        className="w-full sm:w-1/2 placeholder-slate-500 text-black bg-[#fffbfba8] text-sm border border-gray-700 rounded-lg px-4 py-2 focus:outline-none focus:ring focus:ring-green-600"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label htmlFor="email">Email</label>
+                    <div className="mt-2">
+                      <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="Email"
+                        value={data.email}
+                        onChange={onHandleChange}
+                        required
+                        className="w-full placeholder-slate-500 text-black bg-[#fffbfba8] text-sm border border-gray-700 rounded-lg px-4 py-2 focus:outline-none focus:ring focus:ring-green-600"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label htmlFor="password">Password</label>
+                    <div className="mt-2">
+                      <input
+                        type="password"
+                        placeholder="Password"
+                        id="password"
+                        name="password"
+                        value={data.password}
+                        onChange={onHandleChange}
+                        required
+                        className="w-full placeholder-slate-500 text-black bg-[#fffbfba8] text-sm border border-gray-700 rounded-lg px-4 py-2 focus:outline-none focus:ring focus:ring-green-600"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label htmlFor="profile_pic">
+                      Profile Pic
+                      <div className="flex items-center mt-2 placeholder-slate-500 text-black bg-[#fffbfba8] text-sm border border-gray-700 rounded-lg px-4 py-2">
+                        <p className="text-sm truncate text-slate-500">
+                          {uploadPhoto?.name
+                            ? uploadPhoto?.name
+                            : "Upload profile pic"}
+                        </p>
+                        {uploadPhoto?.name && (
+                          <button
+                            className="text-lg ml-2 hover:text-red-500"
+                            onClick={handleClearUploadPhoto}
+                          >
+                            <IoClose />
+                          </button>
+                        )}
+                        <div className="ml-auto flex text-slate-700 items-center">
+                          <FiUpload size={19} />
+                        </div>
+                      </div>
+                    </label>
+                    <input
+                      type="file"
+                      id="profile_pic"
+                      name="profile_pic"
+                      className="hidden"
+                      onChange={handleUploadPhoto}
+                    />
+                  </div>
+                  <div>
+                    <button className="w-full mt-3 px-4 py-2 text-sm bg-green-500 rounded-lg hover:bg-green-600 focus:ring focus:ring-green-600">
+                      Create account
+                    </button>
+                  </div>
+                </form>
+                <div className="absolute bottom-4 right-4">
+                  <p className="text-xs text-gray-200">...AnadiChauhan</p>
+                </div>
+              </div>
+        </div>
+        <div className="h-6 w-full relative bg-[rgba(6,23,6,1)] text-white">
+          <div className=" my-1 text-xs flex justify-around w-[80%] ml-28 items-center" >
+        <p>2024 © <Link href='/' className="text-blue-500 hover:text-blue-300 " >  Infinity-Chat.org - Free Chat Rooms</Link></p>
+        <p className="cursor-pointer hover:text-blue-500" >Terms of Service</p>
+        <p className="cursor-pointer hover:text-blue-500" > Privacy Policy</p>
+        <p className="cursor-pointer hover:text-blue-500" >Contact us</p>
+        <p className="cursor-pointer hover:text-blue-500" > Language</p>
+        </div>
         </div>
       </div>
     </>
   );
 }
+
+

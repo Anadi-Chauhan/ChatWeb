@@ -13,6 +13,12 @@ module.exports = {
         primary : "#0e69aa",
         secondry : "#043c64"
       },
+      backgroundImage: {
+        'background1': "url('/background1.jpg')",
+      },
+      fontFamily: {
+        roboto: ['Roboto', 'sans-serif'],
+      },
     },
   },
   plugins: [],

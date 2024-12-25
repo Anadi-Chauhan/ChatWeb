@@ -1,68 +1,61 @@
 "use client";
 
-import axios from "axios";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { logout, setOnlineUser, setSocketConnection, setUser } from "./redux/userSlice";
-import { getSocket } from "@/lib/socket";
+import Navbar from "./MyComponents/Navbar";
+import { FaUserPlus } from "react-icons/fa";
+import { MdMessage } from "react-icons/md";
+import Spline from "@splinetool/react-spline";
 
 export default function Home() {
-  const user = useSelector((state) => state.user);
-  const dispatch = useDispatch();
-  const router = useRouter();
-
-  console.log("Redux user:", user);
-
-  const fetchUserDetails = async () => {
-    try {
-      const URL = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user-details`;
-      const response = await axios({
-        url: URL,
-        withCredentials: true,
-      });
-
-      dispatch(setUser(response.data.data));
-
-      if (response.data.logout) {
-        dispatch(logout());
-        router.push("/check-email");
-      }
-
-      console.log("Current user details", response);
-    } catch (error) {
-      console.log("Error:", error);
-    }
-  };
-
-  useEffect(() => {
-    fetchUserDetails();
-  }, []);
-
-  // Socket connection
-  useEffect(() => {
-    const socket = getSocket(); // Get the singleton socket instance
-
-    socket.on("onlineUser", (data) => {
-        console.log("Online users:", data);
-        dispatch(setOnlineUser(data));
-    });
-
-    dispatch(setSocketConnection(socket));
-
-    return () => {
-        socket.off("onlineUser");
-    };
-}, []);
-
+ 
   return (
-    <main>
-      <div className="lg:flex justify-center items-center flex-col gap-1 mt-56 hidden">
-        <div>
-          <img src="logo.svg" width={250} alt="logo" />
+    <div className="w-full h-screen bg-black"> 
+      <div className="w-full opacity-30 h-screen absolute bg-[url('/HomeMainBg.jpg')] bg-cover bg-center"></div>
+      <div className="relative">
+        <div className="z-10" >
+            <Navbar />
         </div>
-        <p className="text-2xl mt-1/2 text-slate-600">Select User to send message</p>
+        <div className="relative"></div>
+        <div className="relative flex flex-col justify-center items-center mt-28">
+          {/* <Spline
+        scene="https://prod.spline.design/NvkaBUmbKmsjqAAt/scene.splinecode" 
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
+          zIndex: 11,
+        }}
+      />  */}
+          <div className="relative z-10">
+            <div className="flex justify-center items-center" >
+              <img src="logo.svg" alt="logo" className="w-32 lg:w-[250px]" />
+            </div>
+            <p className="text-lg flex gap-3 justify-center items-center lg:text-2xl text-slate-400">
+              Find People to send message <FaUserPlus className="
+              text-white" size={25} />
+              with this icon
+            </p>
+            <p className="text-white ml-20 text-md mt-4 lg:w-[80vw]">
+              Welcome to our free teen chat. Our teen chat community gives you
+              the opportunity to make new friends, meet cool people, and share
+              great memories and moments with other teenagers from all over the
+              world. We have a friendly environment that is fully moderated to
+              ensure your safety. You can register your username or log in as a
+              guest user below. Please make sure you follow all the rules of the
+              chat rooms or you will not be able to participate.Welcome to our
+              free teen chat. Our teen chat community gives you the opportunity
+              to make new friends, meet cool people, and share great memories
+              and moments with other teenagers from all over the world. We have
+              a friendly environment that is fully moderated to ensure your
+              safety. You can register your username or log in as a guest user
+              below. Please make sure you follow all the rules of the chat rooms
+              or you will not be able to participate.
+            </p>
+          </div>
+        </div>
       </div>
-    </main>
+    </div>
   );
 }
+//{`flex flex-col justify-center items-center gap-4 ${!user ? "mt-16 lg:mt-36" : "p-20"} items-center lg:items-start`}
