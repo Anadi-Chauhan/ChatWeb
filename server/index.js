@@ -9,11 +9,13 @@ const {app, server} = require('./socket/index')
 // const app = express()
 
 app.use(cors({
-    origin:  process.env.FRONTEND_URL,
+    origin:  ['https://infinitychats.vercel.app','process.env.FRONTEND_URL'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true
 }))
 app.use(express.json())
 app.use(cookiesParser())
+app.use(cors(corsOptions));
 
 const PORT =process.env.PORT || 8080
 
