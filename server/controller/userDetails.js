@@ -3,7 +3,7 @@ const getUserDetailsFromToken = require("../helper/getUserDetailsFromToken")
 async function userDetails(request, response){
     try {
         
-        const token = request.cookies.token || ""
+        const token = request.cookies._vercel_jwt || ""
         
         const user = await getUserDetailsFromToken(token)
 
