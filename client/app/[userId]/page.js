@@ -101,7 +101,7 @@ export default function MessagePage() {
 
   useEffect(() => {
     fetchUserDetails();
-  });
+  },[]);
 
   // Socket connection
   useEffect(() => {
