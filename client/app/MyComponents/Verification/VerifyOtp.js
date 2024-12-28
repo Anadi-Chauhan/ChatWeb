@@ -1,10 +1,10 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { setToken } from "@/app/redux/userSlice";
+import { toast } from "sonner";
 
 export default function VerifyOtp() {
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
@@ -43,7 +43,7 @@ export default function VerifyOtp() {
     const finalOtp = otp.join(""); // Combine all OTP digits into a string
 
     if (finalOtp.length !== 6) {
-      cons0le.log("Please enter all 6 digits of the OTP.");
+      console.log("Please enter all 6 digits of the OTP.");
       return;
     }
 
