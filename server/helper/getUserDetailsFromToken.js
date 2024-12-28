@@ -6,7 +6,7 @@ const getUserDetailsFromToken = async (token) => {
     if (!token) {
         
         return {
-            message : "Session Out",
+            message : "Can't Find token",
             logout : true
         }
     }
