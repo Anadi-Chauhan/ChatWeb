@@ -31,8 +31,8 @@ async function verifyOtp(request, response) {
     const cookieOption = {
       httpOnly: true,
       secure: true,
-      sameSite: "none",
-      domain: 'https://infinitychats.vercel.app'
+      sameSite: 'none',
+      maxAge: 24 * 60 * 60 * 1000,
     };
 
     user.otp = undefined;
