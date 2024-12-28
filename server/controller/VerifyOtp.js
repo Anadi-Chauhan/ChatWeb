@@ -30,7 +30,9 @@ async function verifyOtp(request, response) {
 
     const cookieOption = {
       httpOnly: true,
-      secure: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      domain: 'https://infinitychats.vercel.app'
     };
 
     user.otp = undefined;
