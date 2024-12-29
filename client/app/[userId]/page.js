@@ -120,22 +120,22 @@ export default function MessagePage() {
   //   };
   // }, [dispatch]);
 
-  useEffect(() => {
-    const socket = getSocket();
-    console.log('kdjsidvbdsjbj')
-    if (socketConnection) {
-      const handleOnlineUsers = (data) => {
-        console.log("Online users:", data);
-        dispatch(setOnlineUser(data));
-      };
+  // useEffect(() => {
+  //   const socket = getSocket();
+  //   console.log('kdjsidvbdsjbj')
+  //   if (socketConnection) {
+  //     const handleOnlineUsers = (data) => {
+  //       console.log("Online users:", data);
+  //       dispatch(setOnlineUser(data));
+  //     };
   
-      socketConnection.on("onlineUser", handleOnlineUsers);
+  //     socketConnection.on("onlineUser", handleOnlineUsers);
   
-      return () => {
-        socketConnection.off("onlineUser", handleOnlineUsers);
-      };
-    }
-  }, [socketConnection, dispatch]);
+  //     return () => {
+  //       socketConnection.off("onlineUser", handleOnlineUsers);
+  //     };
+  //   }
+  // }, [socketConnection, dispatch]);
 
   useEffect(() => {
     if (currentMessage.current) {
