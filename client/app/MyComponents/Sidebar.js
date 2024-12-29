@@ -55,37 +55,37 @@ export default function SideBar() {
     }
   };
 
-  // useEffect(() => {
-  //   if (socketConnection) {
-  //     console.log("i am connected");
-  //     socketConnection.emit("sidebar", user?._id);
-  //     console.log("i am ", user?._id);
-  //     socketConnection?.on("conversation", (data) => {
-  //       console.log("conversation", data);
-  //       const conversationUserData = data.map((conversationUser, index) => {
-  //         if (
-  //           conversationUser?.sender?._id === conversationUser?.reciever?._id
-  //         ) {
-  //           return {
-  //             ...conversationUser,
-  //             userDetails: conversationUser?.sender,
-  //           };
-  //         } else if (conversationUser?.reciever?._id !== user?._id) {
-  //           return {
-  //             ...conversationUser,
-  //             userDetails: conversationUser?.reciever,
-  //           };
-  //         } else {
-  //           return {
-  //             ...conversationUser,
-  //             userDetails: conversationUser?.sender,
-  //           };
-  //         }
-  //       });
-  //       setAllUser(conversationUserData);
-  //     });
-  //   }
-  // }, [socketConnection, user]);
+  useEffect(() => {
+    if (socketConnection) {
+      console.log("i am connected");
+      socketConnection.emit("sidebar", user?._id);
+      console.log("i am ", user?._id);
+      socketConnection?.on("conversation", (data) => {
+        console.log("conversation", data);
+        const conversationUserData = data.map((conversationUser, index) => {
+          if (
+            conversationUser?.sender?._id === conversationUser?.reciever?._id
+          ) {
+            return {
+              ...conversationUser,
+              userDetails: conversationUser?.sender,
+            };
+          } else if (conversationUser?.reciever?._id !== user?._id) {
+            return {
+              ...conversationUser,
+              userDetails: conversationUser?.reciever,
+            };
+          } else {
+            return {
+              ...conversationUser,
+              userDetails: conversationUser?.sender,
+            };
+          }
+        });
+        setAllUser(conversationUserData);
+      });
+    }
+  }, [socketConnection, user]);
 
   return (
     <>

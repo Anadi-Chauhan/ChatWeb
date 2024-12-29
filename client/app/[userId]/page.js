@@ -104,21 +104,21 @@ export default function MessagePage() {
   },[]);
 
   // Socket connection
-  // useEffect(() => {
-  //   const socket = getSocket(); // Get the singleton socket instance
-  //   console.log('kdjsidvbdsjbj')
+  useEffect(() => {
+    const socket = getSocket(); // Get the singleton socket instance
+    console.log('kdjsidvbdsjbj')
 
-  //   socket.on("onlineUser", (data) => {
-  //     console.log("Online users:", data);
-  //     dispatch(setOnlineUser(data));
-  //   });
+    socket.on("onlineUser", (data) => {
+      console.log("Online users:", data);
+      dispatch(setOnlineUser(data));
+    });
 
-  //   dispatch(setSocketConnection(socket));
+    dispatch(setSocketConnection(socket));
 
-  //   return () => {
-  //     socket.off("onlineUser");
-  //   };
-  // }, [dispatch]);
+    return () => {
+      socket.off("onlineUser");
+    };
+  }, [dispatch]);
 
   // useEffect(() => {
   //   const socket = getSocket();
