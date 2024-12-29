@@ -108,7 +108,7 @@ export default function MessagePage() {
     const socket = getSocket(); // Get the singleton socket instance
     console.log('kdjsidvbdsjbj')
 
-    socket.on("onlineUser", (data) => {
+    socketConnection.on("onlineUser", (data) => {
       console.log("Online users:", data);
       dispatch(setOnlineUser(data));
     });
