@@ -60,7 +60,7 @@ export default function SideBar() {
       console.log("i am connected");
       socketConnection.emit("sidebar", user?._id);
       console.log("i am ", user?._id);
-      socketConnection.on("conversation", (data) => {
+      socketConnection?.on("conversation", (data) => {
         console.log("conversation", data);
         const conversationUserData = data.map((conversationUser, index) => {
           if (
