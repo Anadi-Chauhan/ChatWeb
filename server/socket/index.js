@@ -35,6 +35,8 @@ io.on("connection", async (socket) => {
   console.log("sockettttttt", socket.id);
   console.log(`User ${user._id} connected with socket ID ${socket.id}`);
 
+  console.log("NewError Check",Array.from(onlineUser))  
+
   io.emit("onlineUser", Array.from(onlineUser));
 
   socket.on("message-page", async (userId) => {
