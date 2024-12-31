@@ -225,93 +225,93 @@ export default function MessagePage() {
     setShow(true);
   };
 
-  useEffect(() => {
-    setupMedia();
-    socketConnection.on("call-user", (data) => {
-      setCall({
-        ...call,
-        socketId: data.from,
-        signal: data.signal,
-      });
-    });
+  // useEffect(() => {
+  //   setupMedia();
+  //   socketConnection.on("call-user", (data) => {
+  //     setCall({
+  //       ...call,
+  //       socketId: data.from,
+  //       signal: data.signal,
+  //     });
+  //   });
 
-    socketConnection.on("called-user", () => {
-      setCalled(true);
-    });
-  }, [call,socketConnection]);
+  //   socketConnection.on("called-user", () => {
+  //     setCalled(true);
+  //   });
+  // }, [call]);
 
-  const handleCallUser = () => {
-    // setupMedia();
-    setCalling(true);
-    // socketConnection.emit("call-user", params.userId);
-    enableMedia();
-    const peer = new Peer({
-      initiator: true,
-      trickle: false,
-      stream: stream,
-    });
-    if (socketConnection) {
-      socketConnection.emit("getCalledId", params.userId);
-      socketConnection.emit("getCallerId", user._id);
-      socketConnection.on("callerSocketID", (data) => {
-        console.log("calleddata", data);
-        calledId = data;
-        console.log("calledID", calledId);
-      });
-      socketConnection.on("calledSocketID", (data) => {
-        console.log("callerdata", data);
-        callerId = data;
-        console.log("callerID", callerId);
-      });
+  // const handleCallUser = () => {
+  //   // setupMedia();
+  //   setCalling(true);
+  //   // socketConnection.emit("call-user", params.userId);
+  //   enableMedia();
+  //   const peer = new Peer({
+  //     initiator: true,
+  //     trickle: false,
+  //     stream: stream,
+  //   });
+  //   if (socketConnection) {
+  //     socketConnection.emit("getCalledId", params.userId);
+  //     socketConnection.emit("getCallerId", user._id);
+  //     socketConnection.on("callerSocketID", (data) => {
+  //       console.log("calleddata", data);
+  //       calledId = data;
+  //       console.log("calledID", calledId);
+  //     });
+  //     socketConnection.on("calledSocketID", (data) => {
+  //       console.log("callerdata", data);
+  //       callerId = data;
+  //       console.log("callerID", callerId);
+  //     });
 
-      peer.on("signal", (data) => {
-        console.log("Signal data:", data);
-        socketConnection.emit("call-user", {
-          userToCall: callerId,
-          signal: data,
-          from: calledId,
-        });
-        console.log("calledID", calledId);
-        console.log("callerID", callerId);
-      });
-      peer.on("stream", (stream) => {
-        console.log("Signaled data:", stream);
-        myVideo.current.srcObject = stream; // Assign the remote stream to the remote video element
-        remoteVideo.current.srcObject = stream; // Assign the remote stream to the remote video element
-      });
-      socketConnection.on("call-accepted", (signal) => {
-        console.log("peerSignal", signal);
-        setCallAccepted(true);
-        peer.signal(signal);
-      });
-      connectionRef.current = peer;
-    }
-  };
+  //     peer.on("signal", (data) => {
+  //       console.log("Signal data:", data);
+  //       socketConnection.emit("call-user", {
+  //         userToCall: callerId,
+  //         signal: data,
+  //         from: calledId,
+  //       });
+  //       console.log("calledID", calledId);
+  //       console.log("callerID", callerId);
+  //     });
+  //     peer.on("stream", (stream) => {
+  //       console.log("Signaled data:", stream);
+  //       myVideo.current.srcObject = stream; // Assign the remote stream to the remote video element
+  //       remoteVideo.current.srcObject = stream; // Assign the remote stream to the remote video element
+  //     });
+  //     socketConnection.on("call-accepted", (signal) => {
+  //       console.log("peerSignal", signal);
+  //       setCallAccepted(true);
+  //       peer.signal(signal);
+  //     });
+  //     connectionRef.current = peer;
+  //   }
+  // };
 
-  const handleAnswerCall = () => {
-    enableMedia();
-    setCallAccepted(true);
-    const peer = new Peer({
-      initiator: false,
-      trickle: false,
-      stream: stream,
-    });
-    console.log("Peer object created:", peer);
+  // const handleAnswerCall = () => {
+  //   enableMedia();
+  //   setCallAccepted(true);
+  //   const peer = new Peer({
+  //     initiator: false,
+  //     trickle: false,
+  //     stream: stream,
+  //   });
+  //   console.log("Peer object created:", peer);
 
-    peer.on("signal", (data) => {
-      console.log("cccccc", data);
-      socketConnection.emit("answer-call", { signal: data, to: call.socketId });
-    });
-    peer.on("stream", (remoteStream) => {
-      console.log("Remote stream (receiver):", remoteStream);
-      if (remoteVideo.current) {
-        remoteVideo.current.srcObject = remoteStream; // Assign the remote stream to the remote video element
-        myVideo.current.srcObject = remoteStream; // Assign the remote stream to the remote video element
-      }
-    });
-    peer.signal(call.signal);
-    connectionRef.current = peer;
-  };
+  //   peer.on("signal", (data) => {
+  //     console.log("cccccc", data);
+  //     socketConnection.emit("answer-call", { signal: data, to: call.socketId });
+  //   });
+  //   peer.on("stream", (remoteStream) => {
+  //     console.log("Remote stream (receiver):", remoteStream);
+  //     if (remoteVideo.current) {
+  //       remoteVideo.current.srcObject = remoteStream; // Assign the remote stream to the remote video element
+  //       myVideo.current.srcObject = remoteStream; // Assign the remote stream to the remote video element
+  //     }
+  //   });
+  //   peer.signal(call.signal);
+  //   connectionRef.current = peer;
+  // };
 
   useEffect(() => {
     if (socketConnection) {
