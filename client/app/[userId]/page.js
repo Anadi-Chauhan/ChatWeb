@@ -11,11 +11,11 @@ import Link from "next/link";
 import Image from "next/image";
 import moment from "moment";
 import { IoMdVideocam } from "react-icons/io";
-import { IoCall } from "react-icons/io5";
-import { PiPhoneCallFill } from "react-icons/pi";
-import { MdCallEnd } from "react-icons/md";
-import { IoMdMicOff } from "react-icons/io";
-import { HiMiniSpeakerWave } from "react-icons/hi2";
+// import { IoCall } from "react-icons/io5";
+// import { PiPhoneCallFill } from "react-icons/pi";
+// import { MdCallEnd } from "react-icons/md";
+// import { IoMdMicOff } from "react-icons/io";
+// import { HiMiniSpeakerWave } from "react-icons/hi2";
 import Peer from "simple-peer";
 import Avatar from "@/app/Components/helpers/Avatar";
 import LoadingStyle from "../MyComponents/Loader";
@@ -55,21 +55,21 @@ export default function MessagePage() {
   const [loading, setLoading] = useState(false);
   const [allMessage, setAllMessage] = useState([]);
   const currentMessage = useRef();
-  const [calling, setCalling] = useState(false);
-  const [called, setCalled] = useState(false);
-  const [callAccepted, setCallAccepted] = useState(false);
-  const [stream, setStream] = useState(false);
-  const [show, setShow] = useState(false);
+  // const [calling, setCalling] = useState(false);
+  // const [called, setCalled] = useState(false);
+  // const [callAccepted, setCallAccepted] = useState(false);
+  // const [stream, setStream] = useState(false);
+  // const [show, setShow] = useState(false);
   const callData = {
     socketId: "",
     signal: "",
   };
-  const [call, setCall] = useState(callData);
-  let calledId = null;
-  let callerId = null;
-  const myVideo = useRef(null);
-  const remoteVideo = useRef(null);
-  const connectionRef = useRef();
+  // const [call, setCall] = useState(callData);
+  // let calledId = null;
+  // let callerId = null;
+  // const myVideo = useRef(null);
+  // const remoteVideo = useRef(null);
+  // const connectionRef = useRef();
   const dispatch = useDispatch();
   const router = useRouter();
   const [showComponenet, setShowComponent] = useState(false);
@@ -200,30 +200,30 @@ export default function MessagePage() {
     }
   };
 
-  const setupMedia = () => {
-    navigator.mediaDevices
-      .getUserMedia({ video: true, audio: true })
-      .then((stream) => {
-        console.log("Stream obtained successfully:", stream);
-        setStream(stream);
-        console.log("setted stream", stream);
-      });
-  };
+  // const setupMedia = () => {
+  //   navigator.mediaDevices
+  //     .getUserMedia({ video: true, audio: true })
+  //     .then((stream) => {
+  //       console.log("Stream obtained successfully:", stream);
+  //       setStream(stream);
+  //       console.log("setted stream", stream);
+  //     });
+  // };
 
-  const enableMedia = () => {
-    console.log("myVideo", myVideo.current);
-    console.log("Setting stream to video:", stream);
-    if (stream && myVideo) {
-      console.log("Setting stream to video:", stream);
-      myVideo.current.srcObject = stream; // Set the stream to the local video element
-      remoteVideo.current.srcObject = stream; // Set the stream to the local video element
-      remoteVideo.current.autoPlay = true; // Set the stream to the local video element
-      myVideo.current.autoplay = true;
-    } else {
-      console.error("Stream is invalid or null");
-    }
-    setShow(true);
-  };
+  // const enableMedia = () => {
+  //   console.log("myVideo", myVideo.current);
+  //   console.log("Setting stream to video:", stream);
+  //   if (stream && myVideo) {
+  //     console.log("Setting stream to video:", stream);
+  //     myVideo.current.srcObject = stream; // Set the stream to the local video element
+  //     remoteVideo.current.srcObject = stream; // Set the stream to the local video element
+  //     remoteVideo.current.autoPlay = true; // Set the stream to the local video element
+  //     myVideo.current.autoplay = true;
+  //   } else {
+  //     console.error("Stream is invalid or null");
+  //   }
+  //   setShow(true);
+  // };
 
   // useEffect(() => {
   //   setupMedia();
@@ -373,11 +373,11 @@ export default function MessagePage() {
                 </p>
               </div>
             </div>
-            <div>
+            {/* <div>
               <button>
                 <IoCall onClick={handleCallUser} size={25} />
               </button>
-            </div>
+            </div> */}
             <div>
               <button>
                 <IoMdVideocam size={25} />
@@ -472,9 +472,9 @@ export default function MessagePage() {
                 <LoadingStyle bg="bg-slate-300" />
               </div>
             )}
-            <video height="200px" width="300px" ref={myVideo} autoPlay />
-            <video height="300px" width="300px" ref={remoteVideo} autoPlay />
-            {calling && (
+            {/* <video height="200px" width="300px" ref={myVideo} autoPlay />
+            <video height="300px" width="300px" ref={remoteVideo} autoPlay /> */}
+            {/* {calling && (
               <div className="h-full w-full sticky bottom-0 overflow-hidden flex justify-center items-center p-4 text-white">
                 <div className="w-fit min-w-96 top-0 right-0 rounded-md opacity-90 bg-teal-900 p-6">
                   <div>
@@ -523,8 +523,8 @@ export default function MessagePage() {
                   </div>
                 </div>
               </div>
-            )}
-            {called && (
+            )} */}
+            {/* {called && (
               <div className="h-full w-full  sticky bottom-0 overflow-hidden flex justify-center items-center p-4 text-white">
                 <div className="w-fit min-w-96 top-0 right-0 opacity-90 rounded-md bg-teal-900 p-6">
                   <div>
@@ -572,13 +572,13 @@ export default function MessagePage() {
                   </div>
                 </div>
               </div>
-            )}
-            {!callAccepted && show ? (
+            )} */}
+            {/* {!callAccepted && show ? (
               <audio src="./audio/ringing.mp3" autoPlay loop></audio>
             ) : null}
             {!callAccepted && called ? (
               <audio src="./audio/ringtone.mp3" autoPlay loop></audio>
-            ) : null}
+            ) : null} */}
           </section>
 
           <section className="h-16 bg-white flex items-center px-1 ">
