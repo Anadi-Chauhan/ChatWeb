@@ -16,7 +16,7 @@ export default function SearchUser({onClose}) {
     const handleSearchUser = useCallback(async (e)=> {
         const URL = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/search-user`;
         try {
-            // setLoading(true)
+            setLoading(true)
             const response = await axios.post(URL,{
                 search : search
             })
@@ -30,7 +30,7 @@ export default function SearchUser({onClose}) {
     },[search]);
     useEffect(()=>{
         handleSearchUser()
-    })
+    },[search])
 
     console.log("searchUser",searchUser)
 

@@ -11,11 +11,11 @@ import Link from "next/link";
 import Image from "next/image";
 import moment from "moment";
 import { IoMdVideocam } from "react-icons/io";
-// import { IoCall } from "react-icons/io5";
-// import { PiPhoneCallFill } from "react-icons/pi";
-// import { MdCallEnd } from "react-icons/md";
-// import { IoMdMicOff } from "react-icons/io";
-// import { HiMiniSpeakerWave } from "react-icons/hi2";
+import { IoCall } from "react-icons/io5";
+import { PiPhoneCallFill } from "react-icons/pi";
+import { MdCallEnd } from "react-icons/md";
+import { IoMdMicOff } from "react-icons/io";
+import { HiMiniSpeakerWave } from "react-icons/hi2";
 import Peer from "simple-peer";
 import Avatar from "@/app/Components/helpers/Avatar";
 import LoadingStyle from "../MyComponents/Loader";
@@ -55,21 +55,21 @@ export default function MessagePage() {
   const [loading, setLoading] = useState(false);
   const [allMessage, setAllMessage] = useState([]);
   const currentMessage = useRef();
-  // const [calling, setCalling] = useState(false);
-  // const [called, setCalled] = useState(false);
-  // const [callAccepted, setCallAccepted] = useState(false);
-  // const [stream, setStream] = useState(false);
-  // const [show, setShow] = useState(false);
+  const [calling, setCalling] = useState(false);
+  const [called, setCalled] = useState(false);
+  const [callAccepted, setCallAccepted] = useState(false);
+  const [stream, setStream] = useState(false);
+  const [show, setShow] = useState(false);
   const callData = {
     socketId: "",
     signal: "",
   };
-  // const [call, setCall] = useState(callData);
-  // let calledId = null;
-  // let callerId = null;
-  // const myVideo = useRef(null);
-  // const remoteVideo = useRef(null);
-  // const connectionRef = useRef();
+  const [call, setCall] = useState(callData);
+  let calledId = null;
+  let callerId = null;
+  const myVideo = useRef(null);
+  const remoteVideo = useRef(null);
+  const connectionRef = useRef();
   const dispatch = useDispatch();
   const router = useRouter();
   const [showComponenet, setShowComponent] = useState(false);
@@ -119,23 +119,6 @@ export default function MessagePage() {
       socket.off("onlineUser");
     };
   }, [dispatch]);
-
-  // useEffect(() => {
-  //   const socket = getSocket();
-  //   console.log('kdjsidvbdsjbj')
-  //   if (socketConnection) {
-  //     const handleOnlineUsers = (data) => {
-  //       console.log("Online users:", data);
-  //       dispatch(setOnlineUser(data));
-  //     };
-  
-  //     socketConnection.on("onlineUser", handleOnlineUsers);
-  
-  //     return () => {
-  //       socketConnection.off("onlineUser", handleOnlineUsers);
-  //     };
-  //   }
-  // }, [socketConnection, dispatch]);
 
   useEffect(() => {
     if (currentMessage.current) {
@@ -200,118 +183,118 @@ export default function MessagePage() {
     }
   };
 
-  // const setupMedia = () => {
-  //   navigator.mediaDevices
-  //     .getUserMedia({ video: true, audio: true })
-  //     .then((stream) => {
-  //       console.log("Stream obtained successfully:", stream);
-  //       setStream(stream);
-  //       console.log("setted stream", stream);
-  //     });
-  // };
+  const setupMedia = () => {
+    navigator.mediaDevices
+      .getUserMedia({ video: true, audio: true })
+      .then((stream) => {
+        console.log("Stream obtained successfully:", stream);
+        setStream(stream);
+        console.log("setted stream", stream);
+      });
+  };
 
-  // const enableMedia = () => {
-  //   console.log("myVideo", myVideo.current);
-  //   console.log("Setting stream to video:", stream);
-  //   if (stream && myVideo) {
-  //     console.log("Setting stream to video:", stream);
-  //     myVideo.current.srcObject = stream; // Set the stream to the local video element
-  //     remoteVideo.current.srcObject = stream; // Set the stream to the local video element
-  //     remoteVideo.current.autoPlay = true; // Set the stream to the local video element
-  //     myVideo.current.autoplay = true;
-  //   } else {
-  //     console.error("Stream is invalid or null");
-  //   }
-  //   setShow(true);
-  // };
+  const enableMedia = () => {
+    console.log("myVideo", myVideo.current);
+    console.log("Setting stream to video:", stream);
+    if (stream && myVideo) {
+      console.log("Setting stream to video:", stream);
+      myVideo.current.srcObject = stream; // Set the stream to the local video element
+      remoteVideo.current.srcObject = stream; // Set the stream to the local video element
+      remoteVideo.current.autoPlay = true; // Set the stream to the local video element
+      myVideo.current.autoplay = true;
+    } else {
+      console.error("Stream is invalid or null");
+    }
+    setShow(true);
+  };
 
-  // useEffect(() => {
-  //   setupMedia();
-  //   socketConnection.on("call-user", (data) => {
-  //     setCall({
-  //       ...call,
-  //       socketId: data.from,
-  //       signal: data.signal,
-  //     });
-  //   });
+  useEffect(() => {
+    setupMedia();
+    socketConnection?.on("call-user", (data) => {
+      setCall({
+        ...call,
+        socketId: data.from,
+        signal: data.signal,
+      });
+    });
 
-  //   socketConnection.on("called-user", () => {
-  //     setCalled(true);
-  //   });
-  // }, [call]);
+    socketConnection?.on("called-user", () => {
+      setCalled(true);
+    });
+  }, [call]);
 
-  // const handleCallUser = () => {
-  //   // setupMedia();
-  //   setCalling(true);
-  //   // socketConnection.emit("call-user", params.userId);
-  //   enableMedia();
-  //   const peer = new Peer({
-  //     initiator: true,
-  //     trickle: false,
-  //     stream: stream,
-  //   });
-  //   if (socketConnection) {
-  //     socketConnection.emit("getCalledId", params.userId);
-  //     socketConnection.emit("getCallerId", user._id);
-  //     socketConnection.on("callerSocketID", (data) => {
-  //       console.log("calleddata", data);
-  //       calledId = data;
-  //       console.log("calledID", calledId);
-  //     });
-  //     socketConnection.on("calledSocketID", (data) => {
-  //       console.log("callerdata", data);
-  //       callerId = data;
-  //       console.log("callerID", callerId);
-  //     });
+  const handleCallUser = () => {
+    // setupMedia();
+    setCalling(true);
+    // socketConnection.emit("call-user", params.userId);
+    enableMedia();
+    const peer = new Peer({
+      initiator: true,
+      trickle: false,
+      stream: stream,
+    });
+    if (socketConnection) {
+      socketConnection.emit("getCalledId", params.userId);
+      socketConnection.emit("getCallerId", user._id);
+      socketConnection.on("callerSocketID", (data) => {
+        console.log("calleddata", data);
+        calledId = data;
+        console.log("calledID", calledId);
+      });
+      socketConnection.on("calledSocketID", (data) => {
+        console.log("callerdata", data);
+        callerId = data;
+        console.log("callerID", callerId);
+      });
 
-  //     peer.on("signal", (data) => {
-  //       console.log("Signal data:", data);
-  //       socketConnection.emit("call-user", {
-  //         userToCall: callerId,
-  //         signal: data,
-  //         from: calledId,
-  //       });
-  //       console.log("calledID", calledId);
-  //       console.log("callerID", callerId);
-  //     });
-  //     peer.on("stream", (stream) => {
-  //       console.log("Signaled data:", stream);
-  //       myVideo.current.srcObject = stream; // Assign the remote stream to the remote video element
-  //       remoteVideo.current.srcObject = stream; // Assign the remote stream to the remote video element
-  //     });
-  //     socketConnection.on("call-accepted", (signal) => {
-  //       console.log("peerSignal", signal);
-  //       setCallAccepted(true);
-  //       peer.signal(signal);
-  //     });
-  //     connectionRef.current = peer;
-  //   }
-  // };
+      peer.on("signal", (data) => {
+        console.log("Signal data:", data);
+        socketConnection.emit("call-user", {
+          userToCall: callerId,
+          signal: data,
+          from: calledId,
+        });
+        console.log("calledID", calledId);
+        console.log("callerID", callerId);
+      });
+      peer.on("stream", (stream) => {
+        console.log("Signaled data:", stream);
+        myVideo.current.srcObject = stream; // Assign the remote stream to the remote video element
+        remoteVideo.current.srcObject = stream; // Assign the remote stream to the remote video element
+      });
+      socketConnection.on("call-accepted", (signal) => {
+        console.log("peerSignal", signal);
+        setCallAccepted(true);
+        peer.signal(signal);
+      });
+      connectionRef.current = peer;
+    }
+  };
 
-  // const handleAnswerCall = () => {
-  //   enableMedia();
-  //   setCallAccepted(true);
-  //   const peer = new Peer({
-  //     initiator: false,
-  //     trickle: false,
-  //     stream: stream,
-  //   });
-  //   console.log("Peer object created:", peer);
+  const handleAnswerCall = () => {
+    enableMedia();
+    setCallAccepted(true);
+    const peer = new Peer({
+      initiator: false,
+      trickle: false,
+      stream: stream,
+    });
+    console.log("Peer object created:", peer);
 
-  //   peer.on("signal", (data) => {
-  //     console.log("cccccc", data);
-  //     socketConnection.emit("answer-call", { signal: data, to: call.socketId });
-  //   });
-  //   peer.on("stream", (remoteStream) => {
-  //     console.log("Remote stream (receiver):", remoteStream);
-  //     if (remoteVideo.current) {
-  //       remoteVideo.current.srcObject = remoteStream; // Assign the remote stream to the remote video element
-  //       myVideo.current.srcObject = remoteStream; // Assign the remote stream to the remote video element
-  //     }
-  //   });
-  //   peer.signal(call.signal);
-  //   connectionRef.current = peer;
-  // };
+    peer.on("signal", (data) => {
+      console.log("cccccc", data);
+      socketConnection.emit("answer-call", { signal: data, to: call.socketId });
+    });
+    peer.on("stream", (remoteStream) => {
+      console.log("Remote stream (receiver):", remoteStream);
+      if (remoteVideo.current) {
+        remoteVideo.current.srcObject = remoteStream; // Assign the remote stream to the remote video element
+        myVideo.current.srcObject = remoteStream; // Assign the remote stream to the remote video element
+      }
+    });
+    peer.signal(call.signal);
+    connectionRef.current = peer;
+  };
 
   useEffect(() => {
     if (socketConnection) {
@@ -373,11 +356,11 @@ export default function MessagePage() {
                 </p>
               </div>
             </div>
-            {/* <div>
+            <div>
               <button>
                 <IoCall onClick={handleCallUser} size={25} />
               </button>
-            </div> */}
+            </div>
             <div>
               <button>
                 <IoMdVideocam size={25} />
@@ -472,9 +455,9 @@ export default function MessagePage() {
                 <LoadingStyle bg="bg-slate-300" />
               </div>
             )}
-            {/* <video height="200px" width="300px" ref={myVideo} autoPlay />
-            <video height="300px" width="300px" ref={remoteVideo} autoPlay /> */}
-            {/* {calling && (
+            <video height="200px" width="300px" ref={myVideo} autoPlay />
+            <video height="300px" width="300px" ref={remoteVideo} autoPlay />
+            {calling && (
               <div className="h-full w-full sticky bottom-0 overflow-hidden flex justify-center items-center p-4 text-white">
                 <div className="w-fit min-w-96 top-0 right-0 rounded-md opacity-90 bg-teal-900 p-6">
                   <div>
@@ -523,8 +506,8 @@ export default function MessagePage() {
                   </div>
                 </div>
               </div>
-            )} */}
-            {/* {called && (
+            )}
+            {called && (
               <div className="h-full w-full  sticky bottom-0 overflow-hidden flex justify-center items-center p-4 text-white">
                 <div className="w-fit min-w-96 top-0 right-0 opacity-90 rounded-md bg-teal-900 p-6">
                   <div>
@@ -572,13 +555,13 @@ export default function MessagePage() {
                   </div>
                 </div>
               </div>
-            )} */}
-            {/* {!callAccepted && show ? (
+            )}
+            {!callAccepted && show ? (
               <audio src="./audio/ringing.mp3" autoPlay loop></audio>
             ) : null}
             {!callAccepted && called ? (
               <audio src="./audio/ringtone.mp3" autoPlay loop></audio>
-            ) : null} */}
+            ) : null}
           </section>
 
           <section className="h-16 bg-white flex items-center px-1 ">
