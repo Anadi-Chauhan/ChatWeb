@@ -23,10 +23,27 @@ const messageSchema = new mongoose.Schema({
         required : true,
         ref : 'User'
     },
+    sender_name : {
+        type : String,
+        default : ""
+    },    
+    reciever_name : {
+        type : String,
+        default : ""
+    },
+    sender_profile_pic : {
+        type : String,
+        default : ""
+    },   
+    reciever_profile_pic : {
+        type : String,
+        default : ""
+    },
     seen : {
          type : Boolean,
         default : false
     },
+
 },{
     timestamps : true
 })

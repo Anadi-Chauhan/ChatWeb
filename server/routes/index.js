@@ -6,6 +6,7 @@ const updateUserDetails = require('../controller/updateUserDetails')
 const searchUser = require('../controller/searchUser')
 const verifyOtp = require('../controller/VerifyOtp')
 const guestAccountVerification = require('../controller/guestAccount')
+const login = require('../controller/login')
 
 const router = express.Router()
 
@@ -24,6 +25,8 @@ router.post('/update-user',updateUserDetails)
 router.post('/search-user',searchUser)
 
 router.post('/guest-user',guestAccountVerification)
+
+router.post('/login',login)
 
 
 module.exports = router
