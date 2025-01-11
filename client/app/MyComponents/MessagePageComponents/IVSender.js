@@ -53,7 +53,7 @@ export default function IVSender({setLoading,setMessage}){
             <div>
             <button
                 onClick={handleUpload}
-                className=" flex justify-center items-center w-10 h-10 rounded-full hover:bg-primary hover:text-white"
+                className=" flex justify-center items-center w-10 h-10 rounded-full"
               >
                 <AiFillFileAdd size={23} />
               </button>

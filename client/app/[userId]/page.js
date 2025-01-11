@@ -45,8 +45,16 @@ export default function MessagePage() {
     profile_pic: "",
     online: false,
   });
+  const reciever = useSelector((state) => state?.user);
+  const [dataReciever, setDataReciever] = useState({
+    _id: "",
+    name: "",
+    email: "",
+    profile_pic: "",
+    online: false,
+  });
 
-  const [background, setBackground] = useState("./bg-11.jpg");
+  const [background, setBackground] = useState("");
   const [message, setMessage] = useState({
     text: "",
     imageUrl: "",
@@ -73,16 +81,17 @@ export default function MessagePage() {
   const dispatch = useDispatch();
   const router = useRouter();
   const [showComponenet, setShowComponent] = useState(false);
+  const [userArray, setUserArray] = useState([]);
 
   const fetchUserDetails = async () => {
     try {
-      console.log('entry')
+      console.log("entry");
       const URL = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user-details`;
       const response = await axios({
         url: URL,
         withCredentials: true,
       });
-      console.log('entry2')
+      console.log("entry2");
       console.log("MNP", response.data.data);
 
       dispatch(setUser(response.data.data));
@@ -101,16 +110,17 @@ export default function MessagePage() {
 
   useEffect(() => {
     fetchUserDetails();
-  },[]);
+  }, []);
 
   // Socket connection
   useEffect(() => {
     const socket = getSocket(); // Get the singleton socket instance
-    console.log('kdjsidvbdsjbj')
+    console.log("kdjsidvbdsjbj");
 
     socket.on("onlineUser", (data) => {
       console.log("Online users:", data);
       dispatch(setOnlineUser(data));
+      setUserArray(data);
     });
 
     dispatch(setSocketConnection(socket));
@@ -160,9 +170,9 @@ export default function MessagePage() {
       };
     });
   };
-
+  console.log("mhbjshd", user.name);
   const handleSendMessage = (e) => {
-    e.preventDefault();
+    // e.preventDefault();
     if (message.text || message.imageUrl || message.videoUrl) {
       if (socketConnection) {
         socketConnection.emit("new-message", {
@@ -173,6 +183,10 @@ export default function MessagePage() {
           videoUrl: message.videoUrl,
           msgByUserId: user?._id,
           recievedByUserId: params.userId,
+          sender_name: user.name,
+          reciever_name: params.userId.name,
+          sender_profile_pic: user.profile_pic,
+          reciever_profile_pic: params.userId.profile_pic,
         });
         setMessage({
           text: "",
@@ -182,7 +196,6 @@ export default function MessagePage() {
       }
     }
   };
-
   const setupMedia = () => {
     navigator.mediaDevices
       .getUserMedia({ video: true, audio: true })
@@ -302,15 +315,17 @@ export default function MessagePage() {
       socketConnection.on("message-user", (data) => {
         setDataUser(data);
       });
+      console.log("wvyvwbwsuxsv", socketConnection);
 
       socketConnection.on("message", (data) => {
         console.log("XXXX", data);
+        console.log("XXXXdddddd");
         const latestMessageSender = data[data.length - 1]?.msgByUserId;
-      if(params.userId === latestMessageSender){
-
-        console.log("YYYYY", latestMessageSender);
-        setAllMessage(data);
-      }
+        console.log("ddddd", latestMessageSender);
+        if (params.userId || user?._id === latestMessageSender) {
+          console.log("YYYYY", latestMessageSender);
+          setAllMessage(data);
+        }
       });
     }
     const isValidHex = (str) => /^[a-fA-F0-9]{24}$/.test(str);
@@ -319,14 +334,16 @@ export default function MessagePage() {
     }
   }, [socketConnection, params.userId, user]);
 
+  console.log("mainarray", userArray);
+
   return (
     <>
       {showComponenet ? (
         <div
           style={{ backgroundImage: `url(${background})` }}
-          className="w-full h-screen bg-no-repeat bg-cover bg-center overflow-hidden"
+          className="w-full bg-no-repeat bg-contain bg-center overflow-hidden rounded-b-lg h-full"
         >
-          <header className="sticky top-0 border-b-2 border-b-[rgba(66,89,67,1)] h-16 bg-white grid grid-cols-[950px,2fr,2fr,1fr] items-center px-3">
+          <header className="sticky top-0 h-16 bg-white grid grid-cols-[950px,2fr,2fr,1fr] items-center px-3">
             <div className="flex items-center gap-4">
               <Link
                 href="/"
@@ -372,45 +389,135 @@ export default function MessagePage() {
               </button>
             </div>
           </header>
-          <section className="h-[calc(100vh-128px)] overflow-x-hidden overflow-y-scroll relative bg-slate-950 bg-opacity-40">
-            <div className="flex flex-col gap-2 py-2 mx-2" ref={currentMessage}>
-              {allMessage.map((msg, index) => {
-                return (
-                  <div
-                    key={msg._id}
-                    className={`p-1 py-2 rounded w-fit ${
-                      user._id === msg.msgByUserId
-                        ? "ml-auto bg-teal-200"
-                        : "bg-yellow-100"
-                    }`}
-                  >
-                    <div className="w-full">
-                      {msg?.imageUrl && (
-                        <Image
-                          src={msg?.imageUrl}
-                          width={300}
-                          height={300}
-                          alt="no Image"
-                          className="w-[300px] h-[300px] object-scale-down"
-                        />
-                      )}
-                      {msg?.videoUrl && (
-                        <video
-                          src={msg?.videoUrl}
-                          controls
-                          muted
-                          alt="no Video"
-                          className="w-[300px] h-[300px] object-scale-down"
-                        />
-                      )}
+          <section className="h-[calc(95vh-128px)] p-3 overflow-hidden relative bg-white ">
+            <div
+              className="h-[78.8vh] overflow-hidden bg-gray-100 rounded-lg  p-4"
+              ref={currentMessage}
+            >
+              <div className="h-[70vh] flex flex-col overflow-scroll scrollbar-none">
+                {allMessage.map((msg, index) => {
+                  const isSameUserAsPrevious =
+                  index > 0 && allMessage[index - 1]?.msgByUserId === msg.msgByUserId;
+                  return (
+                    <div
+                      key={msg._id}
+                      className={`p-1 py-2 rounded w-fit min-w-14 ${
+                        user._id === msg.msgByUserId ? "ml-auto" : ""
+                      }`}
+                    >
+                      {!isSameUserAsPrevious &&  (user._id === msg.msgByUserId ? (
+                        <div className="flex gap-3 justify-center items-center">
+                          <p className="text-xs w-fit">
+                            {moment(msg.createdAt).format("hh:mm A")}
+                          </p>
+                          <div className="flex justify-center items-center gap-2">
+                            <p className="text-xs font-bold">
+                              {user._id === msg.msgByUserId
+                                ? "You"
+                                : `${msg.sender_name}`}
+                            </p>
+                            <Avatar
+                              width={30}
+                              height={30}
+                              imageUrl={
+                                msg.sender_profile_pic ||
+                                msg.reciever_profile_pic
+                              }
+                              name={msg.sender_name || msg.reciever_name}
+                              userId={msg?._id}
+                            />
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="flex gap-3 justify-center items-center">
+                          <div className="flex justify-center items-center gap-2">
+                            <Avatar
+                              width={30}
+                              height={30}
+                              imageUrl={
+                                msg.sender_profile_pic ||
+                                msg.reciever_profile_pic
+                              }
+                              name={msg.sender_name || msg.reciever_name}
+                              userId={msg?._id}
+                            />
+                            <p className="text-xs font-bold">
+                              {user._id === msg.msgByUserId
+                                ? "You"
+                                : `${msg.sender_name}`}
+                            </p>
+                          </div>
+                          <p className="text-xs w-fit">
+                            {moment(msg.createdAt).format("hh:mm A")}
+                          </p>
+                        </div>
+                ))}
+
+                      <p
+                        className={` px-4 -mb-1 py-1 w-fit text-sm rounded-2xl min-w-14 ${
+                          user._id === msg.msgByUserId
+                            ? "bg-green-500 mr-10"
+                            : "bg-white ml-7"
+                        }`}
+                      >
+                        {msg.text}
+                      </p>
+
+                      <div className="w-full">
+                        {msg?.imageUrl && (
+                          <Image
+                            src={msg?.imageUrl}
+                            width={300}
+                            height={300}
+                            alt="no Image"
+                            className="w-[300px] h-[300px] object-scale-down"
+                          />
+                        )}
+                        {msg?.videoUrl && (
+                          <video
+                            src={msg?.videoUrl}
+                            controls
+                            muted
+                            alt="no Video"
+                            className="w-[300px] h-[300px] object-scale-down"
+                          />
+                        )}
+                      </div>
                     </div>
-                    <p className="px-2">{msg.text}</p>
-                    <p className="text-xs ml-auto w-fit">
-                      {moment(msg.createdAt).format("hh:mm")}
-                    </p>
+                  );
+                })}
+
+                <section className="h-12 z-20 flex items-center absolute bottom-7 gap-4  px-1   ">
+                  <div className="flex justify-center items-center bg-white rounded-lg  w-[62.5rem]" >
+
+                  <div className=" relative">
+                    <IVSender setLoading={setLoading} setMessage={setMessage} />
                   </div>
-                );
-              })}
+                  <div className="flex justify-center items-center mt-2 rounded-full h-8 w-8">
+                    <BackgroundChanger setBackground={setBackground} />
+                  </div>
+                  <div className="flex justify-center mt-2 items-center rounded-full h-10 w-10">
+                    <EmojiPickerComponet onEmojiSelect={handleEmojiMessage} />
+                  </div>
+                  <form
+                    className="h-full w-full flex justify-center items-center"
+                   
+                  >
+                    <input
+                      type="text"
+                      placeholder="Type your message..."
+                      className="py-1 px-4 outline-none w-full h-full"
+                      value={message.text}
+                      onChange={handleOnChange}
+                      />
+                    
+                  </form>
+                      </div>
+                  <button  onClick={handleSendMessage} className=" h-12 w-12  rounded-lg flex justify-center items-center bg-green-400 hover:text-white">
+                      <MdSend size={25} />
+                    </button>
+                </section>
+              </div>
             </div>
             {message.imageUrl && (
               <div className="w-full h-full sticky bottom-0 bg-slate-700 bg-opacity-30 flex justify-center items-center rounded overflow-hiddenx">
@@ -562,33 +669,6 @@ export default function MessagePage() {
             {!callAccepted && called ? (
               <audio src="./audio/ringtone.mp3" autoPlay loop></audio>
             ) : null}
-          </section>
-
-          <section className="h-16 bg-white flex items-center px-1 ">
-            <div className=" relative">
-              <IVSender setLoading={setLoading} setMessage={setMessage} />
-            </div>
-            <div className="flex justify-center items-center rounded-full hover:bg-primary hover:text-white h-10 w-10">
-              <BackgroundChanger setBackground={setBackground} />
-            </div>
-            <div className="flex justify-center items-center rounded-full hover:bg-primary hover:text-white h-10 w-10">
-              <EmojiPickerComponet onEmojiSelect={handleEmojiMessage} />
-            </div>
-            <form
-              className="h-full w-full flex justify-center items-center"
-              onSubmit={handleSendMessage}
-            >
-              <input
-                type="text"
-                placeholder="Type your message..."
-                className="py-1 px-4 outline-none w-full h-full"
-                value={message.text}
-                onChange={handleOnChange}
-              />
-              <button className=" h-10 w-10 flex justify-center items-center rounded-full hover:bg-primary hover:text-white">
-                <MdSend size={25} />
-              </button>
-            </form>
           </section>
         </div>
       ) : (

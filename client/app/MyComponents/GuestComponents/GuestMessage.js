@@ -41,14 +41,14 @@ export default function GuestMessage() {
 
   useEffect(() => {
     const socket = getSocket();
-    socket.on("onlineUser", (data) => {
-      console.log("USerData", data);
+    socket.on("guestUser", (data) => {
+      // console.log("USerData", data);
       dispatch(setOnlineUser(data));
     });
     dispatch(setSocketConnection(socket));
 
     return () => {
-      socket.off("onlineUser");
+      socket.off("guestUser");
     };
   }, [socketConnection,dispatch]);
 
@@ -74,7 +74,7 @@ export default function GuestMessage() {
     e.preventDefault();
     if (message.text) {
       if (socketConnection) {
-        socketConnection.emit("new-message", {
+        socketConnection.emit("guest-new-message", {
           sender: user?._id,
           reciever: process.env.NEXT_PUBLIC_GLOBAL_RECIEVER,
           text: message.text,
@@ -127,12 +127,12 @@ export default function GuestMessage() {
 
   useEffect(() => {
     if (socketConnection) {
-      socketConnection.emit("message-page", process.env.NEXT_PUBLIC_GLOBAL_RECIEVER);
-      socketConnection.on("message-user", (data) => {
+      socketConnection.emit("guest-message-page", process.env.NEXT_PUBLIC_GLOBAL_RECIEVER);
+      socketConnection.on("guest-message-user", (data) => {
         setDataUser(data);
       });
 
-      socketConnection.on("message", (data) => {
+      socketConnection.on("guest-message", (data) => {
         console.log("XXXX", data);
         const latestMessageSender = data[data.length - 1]?.msgByUserId;
         console.log("YYYYY", latestMessageSender);
@@ -222,9 +222,6 @@ export default function GuestMessage() {
       </section>
       {/* Message Footer */}
       <section className="h-16 bg-white flex items-center px-1 ">
-        <div className="relative mb-1">
-          <IVSender />
-        </div>
         <div className="flex justify-center items-center rounded-full hover:bg-primary hover:text-white h-10 w-10">
           <BackgroundChanger />
         </div>

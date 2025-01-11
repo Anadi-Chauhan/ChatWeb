@@ -7,7 +7,10 @@ export default function Navbar(){
                 <div>
                     <ul className="text-gray-200 flex gap-10 justify-end mr-10 " >
                         <li className="hover:text-white hover:underline">
-                            <GNavLink href='/register'>Register/LogIn</GNavLink>
+                            <GNavLink href='/register'>Register</GNavLink>
+                        </li>
+                        <li className="hover:text-white hover:underline">
+                            <GNavLink href='/login'>LogIn</GNavLink>
                         </li>
                         <li className="hover:text-white hover:underline">
                             <GNavLink href='/room'>Guest Room</GNavLink>

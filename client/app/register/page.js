@@ -98,12 +98,13 @@ export default function RegisterPage() {
                   <h2 className="text-2xl font-bold">Create new account.</h2>
                   <p className="text-sm mt-2 flex gap-1">
                     Already a Member?
-                    <button
-                      onClick={() => setShowEmail(true)}
+                    <Link
+                      // onClick={() => setShowEmail(true)}
+                      href='/login'
                       className="text-red-400 hover:underline flex items-center"
                     >
                       Log in <BiRightArrowAlt size={20} />
-                    </button>
+                    </Link>
                   </p>
                 </div>
                 <form className="space-y-4" onSubmit={handleSubmit}>

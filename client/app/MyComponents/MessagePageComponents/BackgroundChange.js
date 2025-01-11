@@ -2,7 +2,6 @@
 import Image from "next/image";
 import { useState } from "react";
 import { MdWallpaper } from "react-icons/md";
-import { RxCross2 } from "react-icons/rx";
 
 export default function BackgroundChanger({setBackground}){
 
@@ -13,10 +12,6 @@ export default function BackgroundChanger({setBackground}){
         setOpenBackground((prev) => !prev);
       };
 
-      const handleCloseBackground = () => {
-        setOpenBackground(false);
-      };
-
       const handleBackgroundChange = (image) => {
         setBackground(image);
         setOpenBackground(false);
@@ -25,16 +20,7 @@ export default function BackgroundChanger({setBackground}){
         <>
             <section  className="h-[calc(100vh-128px)] overflow-x-hidden overflow-y-scroll relative bg-slate-950 bg-opacity-40">
             {openBackground && (
-              <div className="fixed inset-40 top-0 bg-opacity-25 w-full h-full flex justify-center items-center">
-                <div
-                  className="w-fit mb-[33rem]  realtive cursor-pointer "
-                  onClick={handleCloseBackground}
-                >
-                  <RxCross2
-                    size={30}
-                    className="text-white hover:text-red-600"
-                  />
-                </div>
+              <div className="fixed top-52 ml-44 w-fit h-fit flex items-center">
                 <div className="bg-white grid grid-cols-4 p-3 gap-2">
                   {[
                     "/bg-1.jpg",
