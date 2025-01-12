@@ -228,7 +228,7 @@ export default function MessagePage() {
       audioRef.current?.play();
     } else {
       audioRef.current?.pause();
-      // audioRef.current?.currentTime = 0; // Reset playback position
+      // audioRef.current.currentTime = 0; // Reset playback position
     }
   }, [callAccepted, show]);
 
@@ -254,7 +254,7 @@ export default function MessagePage() {
     // setupMedia();
     setCalling(true);
     // socketConnection.emit("call-user", params.userId);
-    enableMedia();
+    
     const peer = new Peer({
       initiator: true,
       trickle: false,
@@ -280,6 +280,7 @@ export default function MessagePage() {
       peer.on("stream", (stream) => {
         myVideo.current.srcObject = stream;
         remoteVideo.current.srcObject = stream;
+        enableMedia();
       });
       socketConnection.on("call-accepted", (signal) => {
         setCallAccepted(true);
@@ -290,7 +291,6 @@ export default function MessagePage() {
   };
 
   const handleAnswerCall = () => {
-    enableMedia();
     setCallAccepted(true);
     const peer = new Peer({
       initiator: false,
@@ -308,6 +308,7 @@ export default function MessagePage() {
       if (remoteVideo.current) {
         remoteVideo.current.srcObject = remoteStream;
         myVideo.current.srcObject = remoteStream;
+        enableMedia();
       }
     });
     peer.signal(call.signal);
@@ -595,24 +596,20 @@ export default function MessagePage() {
                 <LoadingStyle bg="bg-slate-300" />
               </div>
             )}
-            <video height="200px" width="300px" ref={myVideo} autoPlay />
-            <video height="300px" width="300px" ref={remoteVideo} autoPlay />
+            {/* <video height="200px" width="300px" ref={myVideo} autoPlay /> */}
+            {/* <video height="300px" width="300px" ref={remoteVideo} autoPlay /> */}
             {calling && (
               <div
                 style={{ backgroundImage: `url(${dataUser.profile_pic})` }}
-                className="w-full h-[25rem] sticky bottom-56 overflow-hidden p-2 text-white bg-no-repeat bg-contain bg-center rounded-b-lg"
+                className="w-full h-[28rem] sticky bottom-56 overflow-hidden p-2 text-white bg-no-repeat bg-contain bg-center rounded-2xl"
               >
                 <div className="flex flex-col items-center justify-center">
-                  {/* User Info */}
                   <h1 className="font-semibold text-3xl">{dataUser?.name}</h1>
                   <div className="flex items-center mt-1 font-bold gap-2 text-xl">
                     <PiPhoneCallFill size={25} />
                     <span>Calling...</span>
                   </div>
-
-                  {/* Video Section */}
                   <div className="flex justify-center items-center gap-5 mt-5">
-                    {/* User's Video */}
                     <div className="w-40 h-40 border-2 border-gray-300 rounded-lg overflow-hidden shadow-lg">
                       <video
                         className="w-full h-full object-cover"
@@ -621,8 +618,7 @@ export default function MessagePage() {
                         muted
                       />
                     </div>
-                    {/* Remote User's Video */}
-                    <div className="w-60 h-60 border-2 border-gray-300 rounded-lg overflow-hidden shadow-lg">
+                    <div className={`w-60 h-60 border-2 border-gray-300 rounded-lg overflow-hidden shadow-lg`}>
                       <video
                         className="w-full h-full object-cover"
                         ref={remoteVideo}
@@ -630,10 +626,7 @@ export default function MessagePage() {
                       />
                     </div>
                   </div>
-
-                  {/* Controls */}
                   <div className="flex mt-8 gap-5 justify-center">
-                    {/* Speaker Toggle */}
                     <div className="bg-slate-200 rounded-full text-black">
                       <button
                         className="p-2"
@@ -647,8 +640,6 @@ export default function MessagePage() {
                         <HiMiniSpeakerWave size={30} />
                       </button>
                     </div>
-
-                    {/* Mute Toggle */}
                     <div className="bg-slate-200 rounded-full text-black">
                       <button
                         className="p-2"
@@ -666,8 +657,6 @@ export default function MessagePage() {
                         <IoMdMicOff size={30} />
                       </button>
                     </div>
-
-                    {/* End Call */}
                     <div className="bg-red-500 p-3 flex rounded-full">
                       <button
                         onClick={handleEndCall}
@@ -681,9 +670,10 @@ export default function MessagePage() {
                 </div>
               </div>
             )}
+
             {called && (
               <div className="h-full w-full  sticky bottom-0 overflow-hidden flex justify-center items-center p-4 text-white">
-                <div className="w-fit min-w-96 top-0 right-0 opacity-90 rounded-md bg-teal-900 p-6">
+                <div className="w-fit min-w-96 top-0 right-0 opacity-90 rounded-md bg-green-800 p-6">
                   <div>
                     <h1 className="font-semibold flex justify-center text-6xl my-0 mt-1">
                       {dataUser?.name}
@@ -703,13 +693,23 @@ export default function MessagePage() {
                       name={dataUser?.name}
                     />
                   </div>
-                  <video height="200px" width="200px" ref={myVideo} autoPlay />
-                  <video
-                    height="300px"
-                    width="300px"
-                    ref={remoteVideo}
-                    autoPlay
-                  />
+                  <div className="flex justify-center items-center gap-5 mt-5">
+                    <div className="w-40 h-40 border-2 border-gray-300 rounded-lg overflow-hidden shadow-lg">
+                      <video
+                        className="w-full h-full object-cover"
+                        ref={myVideo}
+                        autoPlay
+                        muted
+                      />
+                    </div>
+                    <div className={`w-60 h-60 border-2 border-gray-300 rounded-lg overflow-hidden shadow-lg`}>
+                      <video
+                        className="w-full h-full object-cover"
+                        ref={remoteVideo}
+                        autoPlay
+                      />
+                    </div>
+                  </div>
                   <div className="flex mt-10 justify-between mx-12">
                     <div className="bg-red-500 p-[6px]  flex rounded-md">
                       <button
@@ -721,7 +721,7 @@ export default function MessagePage() {
                       </button>
                     </div>
                     <div className="bg-red-500 p-[6px]  flex rounded-md">
-                      <button className="flex items-center text-white gap-2 ">
+                      <button onClick={handleEndCall} className="flex items-center text-white gap-2 ">
                         Decline
                         <MdCallEnd />
                       </button>
