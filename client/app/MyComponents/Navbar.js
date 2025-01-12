@@ -1,3 +1,5 @@
+'use client'
+
 import GNavLink from "./GlobalNavlink";
 import { useState } from "react";
 import { FiMenu, FiX } from "react-icons/fi";
