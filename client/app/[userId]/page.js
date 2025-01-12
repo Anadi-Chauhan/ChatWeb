@@ -253,6 +253,7 @@ export default function MessagePage() {
   const handleCallUser = () => {
     // setupMedia();
     setCalling(true);
+     enableMedia();
     // socketConnection.emit("call-user", params.userId);
     
     const peer = new Peer({
@@ -280,7 +281,7 @@ export default function MessagePage() {
       peer.on("stream", (stream) => {
         myVideo.current.srcObject = stream;
         remoteVideo.current.srcObject = stream;
-        enableMedia();
+       
       });
       socketConnection.on("call-accepted", (signal) => {
         setCallAccepted(true);
@@ -292,6 +293,7 @@ export default function MessagePage() {
 
   const handleAnswerCall = () => {
     setCallAccepted(true);
+    enableMedia();
     const peer = new Peer({
       initiator: false,
       trickle: false,
@@ -308,7 +310,7 @@ export default function MessagePage() {
       if (remoteVideo.current) {
         remoteVideo.current.srcObject = remoteStream;
         myVideo.current.srcObject = remoteStream;
-        enableMedia();
+
       }
     });
     peer.signal(call.signal);
@@ -596,8 +598,8 @@ export default function MessagePage() {
                 <LoadingStyle bg="bg-slate-300" />
               </div>
             )}
-            {/* <video height="200px" width="300px" ref={myVideo} autoPlay /> */}
-            {/* <video height="300px" width="300px" ref={remoteVideo} autoPlay /> */}
+            <video height="200px" width="300px" ref={myVideo} autoPlay />
+            <video height="300px" width="300px" ref={remoteVideo} autoPlay />
             {calling && (
               <div
                 style={{ backgroundImage: `url(${dataUser.profile_pic})` }}
