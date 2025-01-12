@@ -221,6 +221,17 @@ export default function MessagePage() {
     setShow(true);
   };
 
+  const audioRef = useRef(null);
+
+  useEffect(() => {
+    if (!callAccepted && show) {
+      audioRef.current?.play();
+    } else {
+      audioRef.current?.pause();
+      // audioRef.current?.currentTime = 0; // Reset playback position
+    }
+  }, [callAccepted, show]);
+
   useEffect(() => {
     setupMedia();
     socketConnection?.on("call-user", (data) => {
@@ -233,6 +244,9 @@ export default function MessagePage() {
 
     socketConnection?.on("called-user", () => {
       setCalled(true);
+    });
+    socketConnection?.on("end-call", () => {
+      handleEndCall(); // Trigger end call cleanup
     });
   }, [call]);
 
@@ -250,33 +264,24 @@ export default function MessagePage() {
       socketConnection.emit("getCalledId", params.userId);
       socketConnection.emit("getCallerId", user._id);
       socketConnection.on("callerSocketID", (data) => {
-        console.log("calleddata", data);
         calledId = data;
-        console.log("calledID", calledId);
       });
       socketConnection.on("calledSocketID", (data) => {
-        console.log("callerdata", data);
         callerId = data;
-        console.log("callerID", callerId);
       });
 
       peer.on("signal", (data) => {
-        console.log("Signal data:", data);
         socketConnection.emit("call-user", {
           userToCall: callerId,
           signal: data,
           from: calledId,
         });
-        console.log("calledID", calledId);
-        console.log("callerID", callerId);
       });
       peer.on("stream", (stream) => {
-        console.log("Signaled data:", stream);
-        myVideo.current.srcObject = stream; // Assign the remote stream to the remote video element
-        remoteVideo.current.srcObject = stream; // Assign the remote stream to the remote video element
+        myVideo.current.srcObject = stream;
+        remoteVideo.current.srcObject = stream;
       });
       socketConnection.on("call-accepted", (signal) => {
-        console.log("peerSignal", signal);
         setCallAccepted(true);
         peer.signal(signal);
       });
@@ -301,12 +306,41 @@ export default function MessagePage() {
     peer.on("stream", (remoteStream) => {
       console.log("Remote stream (receiver):", remoteStream);
       if (remoteVideo.current) {
-        remoteVideo.current.srcObject = remoteStream; // Assign the remote stream to the remote video element
-        myVideo.current.srcObject = remoteStream; // Assign the remote stream to the remote video element
+        remoteVideo.current.srcObject = remoteStream;
+        myVideo.current.srcObject = remoteStream;
       }
     });
     peer.signal(call.signal);
     connectionRef.current = peer;
+  };
+
+  const handleEndCall = () => {
+    if (stream) {
+      stream.getTracks().forEach((track) => track.stop());
+    }
+    if (socketConnection) {
+      socketConnection.emit("end-call", { userToDisconnect: callerId });
+    }
+    if (connectionRef.current) {
+      connectionRef.current.destroy();
+      connectionRef.current = null;
+    }
+
+    setCalling(false);
+    setCallAccepted(false);
+    setShow(false);
+
+    if (myVideo.current) {
+      myVideo.current.srcObject = null;
+    }
+    if (remoteVideo.current) {
+      remoteVideo.current.srcObject = null;
+    }
+
+    if (audioRef.current) {
+      audioRef.current.pause();
+      // audioRef.current.currentTime = 0;
+    }
   };
 
   useEffect(() => {
@@ -333,8 +367,6 @@ export default function MessagePage() {
       setShowComponent(true);
     }
   }, [socketConnection, params.userId, user]);
-
-  console.log("mainarray", userArray);
 
   return (
     <>
@@ -510,13 +542,13 @@ export default function MessagePage() {
                         onChange={handleOnChange}
                       />
                     </form>
+                  </div>
                   <button
                     onClick={handleSendMessage}
-                    className=" h-12 w-12  rounded-lg flex justify-center items-center bg-green-400 hover:text-white "
+                    className=" h-12 w-12  rounded-lg flex justify-center items-center bg-green-400 hover:text-white absolute lg:bottom-0 lg:right-16 sm:bottom-10 md:bottom-10 sm:right-8 md:right-8"
                   >
                     <MdSend size={25} />
                   </button>
-                  </div>
                 </section>
               </div>
             </div>
@@ -566,47 +598,81 @@ export default function MessagePage() {
             <video height="200px" width="300px" ref={myVideo} autoPlay />
             <video height="300px" width="300px" ref={remoteVideo} autoPlay />
             {calling && (
-              <div className="h-full w-full sticky bottom-0 overflow-hidden flex justify-center items-center p-4 text-white">
-                <div className="w-fit min-w-96 top-0 right-0 rounded-md opacity-90 bg-teal-900 p-6">
-                  <div>
-                    <h1 className="font-semibold flex justify-center text-6xl my-0 mt-1">
-                      {dataUser?.name}
-                    </h1>
-                    <div className="flex justify-center mt-4 font-bold gap-2 text-xl">
-                      <p>
-                        <PiPhoneCallFill size={25} />
-                      </p>
-                      Calling...
+              <div
+                style={{ backgroundImage: `url(${dataUser.profile_pic})` }}
+                className="w-full h-[25rem] sticky bottom-56 overflow-hidden p-2 text-white bg-no-repeat bg-contain bg-center rounded-b-lg"
+              >
+                <div className="flex flex-col items-center justify-center">
+                  {/* User Info */}
+                  <h1 className="font-semibold text-3xl">{dataUser?.name}</h1>
+                  <div className="flex items-center mt-1 font-bold gap-2 text-xl">
+                    <PiPhoneCallFill size={25} />
+                    <span>Calling...</span>
+                  </div>
+
+                  {/* Video Section */}
+                  <div className="flex justify-center items-center gap-5 mt-5">
+                    {/* User's Video */}
+                    <div className="w-40 h-40 border-2 border-gray-300 rounded-lg overflow-hidden shadow-lg">
+                      <video
+                        className="w-full h-full object-cover"
+                        ref={myVideo}
+                        autoPlay
+                        muted
+                      />
+                    </div>
+                    {/* Remote User's Video */}
+                    <div className="w-60 h-60 border-2 border-gray-300 rounded-lg overflow-hidden shadow-lg">
+                      <video
+                        className="w-full h-full object-cover"
+                        ref={remoteVideo}
+                        autoPlay
+                      />
                     </div>
                   </div>
-                  <div className="flex mt-6 justify-center">
-                    <Avatar
-                      width={100}
-                      height={100}
-                      imageUrl={dataUser?.profile_pic}
-                      name={dataUser?.name}
-                    />
-                  </div>
-                  <video height="200px" width="200px" ref={myVideo} autoPlay />
-                  <video
-                    height="300px"
-                    width="300px"
-                    ref={remoteVideo}
-                    autoplay
-                  />
-                  <div className="flex mt-52 gap-3 justify-between">
+
+                  {/* Controls */}
+                  <div className="flex mt-8 gap-5 justify-center">
+                    {/* Speaker Toggle */}
                     <div className="bg-slate-200 rounded-full text-black">
-                      <button className="p-2">
+                      <button
+                        className="p-2"
+                        onClick={() => {
+                          if (myVideo.current) {
+                            const enabled = myVideo.current.muted;
+                            myVideo.current.muted = !enabled;
+                          }
+                        }}
+                      >
                         <HiMiniSpeakerWave size={30} />
                       </button>
                     </div>
+
+                    {/* Mute Toggle */}
                     <div className="bg-slate-200 rounded-full text-black">
-                      <button className="p-2">
+                      <button
+                        className="p-2"
+                        onClick={() => {
+                          if (stream) {
+                            const audioTrack = stream
+                              .getTracks()
+                              .find((track) => track.kind === "audio");
+                            if (audioTrack) {
+                              audioTrack.enabled = !audioTrack.enabled;
+                            }
+                          }
+                        }}
+                      >
                         <IoMdMicOff size={30} />
                       </button>
                     </div>
-                    <div className="bg-red-500 p-[6px]  flex rounded-md">
-                      <button className="flex items-center text-white gap-2 ">
+
+                    {/* End Call */}
+                    <div className="bg-red-500 p-3 flex rounded-full">
+                      <button
+                        onClick={handleEndCall}
+                        className="flex items-center text-white gap-2"
+                      >
                         Decline
                         <MdCallEnd />
                       </button>
@@ -664,9 +730,12 @@ export default function MessagePage() {
                 </div>
               </div>
             )}
-            {!callAccepted && show ? (
-              <audio src="./audio/ringing.mp3" autoPlay loop></audio>
-            ) : null}
+            <audio
+              ref={audioRef}
+              id="ringtone"
+              src="./audio/ringing.mp3"
+              loop
+            ></audio>
             {!callAccepted && called ? (
               <audio src="./audio/ringtone.mp3" autoPlay loop></audio>
             ) : null}
