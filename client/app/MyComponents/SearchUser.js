@@ -40,49 +40,48 @@ export default function SearchUser({ onClose }) {
 
   return (
     <>
-      <div className="flex justify-center items-center h-8 w-72 bg-gray-100 rounded-3xl">
-        <div className="h-12 w-12 flex justify-center items-center ">
-          <CiSearch size={23} />
-        </div>
-        <input
-          type="text"
-          placeholder="Search now..."
-          className="w-full outline-none p-1 h-full bg-gray-100 rounded-3xl z-20 px-4 "
-          onChange={(e) => setSearch(e.target.value)}
-          value={search}
-          onFocus={() => setOpenModel(true)}
-        />
-        <p className="mr-3 text-gray-600">/F</p>
-      </div>
-      {openModel && (
-        <div className="fixed bg-opacity-0 top-0 bottom-0 right-0 z-10 ">
-          <button onClick={() => setOpenModel(false)} className="text-red-600 float-end p-4">
-            <ImCross size={25} />
-          </button>
-          <div className="w-full max-w-lg mx-auto mt-8">
-            <div className="h-[70vh] overflow-x-hidden overflow-y-scroll custom-scrollbar mt-2 w-full p-4">
-              {searchUser.length === 0 && !loading && (
-                <p className="text-center text-slate-500">No User Found!</p>
-              )}
+  <div className="flex justify-center items-center h-8 w-2/3 sm:w-1/2 md:w-2/3 lg:w-full bg-gray-100 rounded-3xl">
+  <div className="h-12 w-12 flex justify-center items-center">
+    <CiSearch size={23} />
+  </div>
+  <input
+    type="text"
+    placeholder="Search now..."
+    className="w-full outline-none p-1 h-full bg-gray-100 rounded-3xl z-20 px-4"
+    onChange={(e) => setSearch(e.target.value)}
+    value={search}
+    onFocus={() => setOpenModel(true)}
+  />
+  <p className="mr-3 text-gray-600">/F</p>
+</div>
 
-              {loading && (
-                <div className="text-center">
-                  <LoadingStyle />
-                </div>
-              )}
-              {searchUser.length !== 0 &&
-                !loading &&
-                searchUser.map((user, index) => (
-                  <UserSearchCard
-                    key={user._id}
-                    user={user}
-                    onClose={onClose}
-                  />
-                ))}
-            </div>
+{openModel && (
+  <div className="fixed inset-0 bg-opacity-0 z-10 flex justify-center items-center">
+    <button onClick={() => setOpenModel(false)} className="absolute top-4 right-4 text-red-600">
+      <ImCross size={25} />
+    </button>
+    <div className="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg mx-auto mt-8 bg-white shadow-lg rounded-lg">
+      <div className="h-[70vh] overflow-x-hidden overflow-y-scroll custom-scrollbar mt-2 w-full p-4">
+        {searchUser.length === 0 && !loading && (
+          <p className="text-center text-slate-500">No User Found!</p>
+        )}
+
+        {loading && (
+          <div className="text-center">
+            <LoadingStyle />
           </div>
-        </div>
-      )}
+        )}
+
+        {searchUser.length !== 0 &&
+          !loading &&
+          searchUser.map((user, index) => (
+            <UserSearchCard key={user._id} user={user} onClose={onClose} />
+          ))}
+      </div>
+    </div>
+  </div>
+)}
+
     </>
   );
 }

@@ -203,14 +203,22 @@ export default function RegisterPage() {
                 </div>
               </div>
         </div>
-        <div className="h-6 w-full relative bg-[rgba(6,23,6,1)] text-white">
-          <div className=" my-1 text-xs flex justify-around w-[80%] ml-28 items-center" >
-        <p>2024 © <Link href='/' className="text-blue-500 hover:text-blue-300 " >  Infinity-Chat.org - Free Chat Rooms</Link></p>
-        <p className="cursor-pointer hover:text-blue-500" >Terms of Service</p>
-        <p className="cursor-pointer hover:text-blue-500" > Privacy Policy</p>
-        <p className="cursor-pointer hover:text-blue-500" >Contact us</p>
-        <p className="cursor-pointer hover:text-blue-500" > Language</p>
-        </div>
+        {/* Footer */}
+        <div className="h-12 w-full bg-[rgba(6,23,6,1)] text-white">
+          <div className="flex flex-wrap justify-around items-center h-full px-4 text-xs">
+            <p>
+              2024 ©{" "}
+              <Link href="/" className="text-blue-500 hover:text-blue-300">
+                Infinity-Chat.org - Free Chat Rooms
+              </Link>
+            </p>
+            <p className="cursor-pointer hover:text-blue-500">
+              Terms of Service
+            </p>
+            <p className="cursor-pointer hover:text-blue-500">Privacy Policy</p>
+            <p className="cursor-pointer hover:text-blue-500">Contact us</p>
+            <p className="cursor-pointer hover:text-blue-500">Language</p>
+          </div>
         </div>
       </div>
     </>

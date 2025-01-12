@@ -5,8 +5,7 @@ import Avatar from "../Components/helpers/Avatar";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { FiArrowUpLeft } from "react-icons/fi";
-import { FaVideo } from "react-icons/fa6";
-import { FaImage } from "react-icons/fa6";
+import { FaVideo, FaImage } from "react-icons/fa6";
 import Link from "next/link";
 import { Providers } from "../Provider";
 import moment from "moment";
@@ -24,7 +23,7 @@ export default function SideBar() {
       socketConnection.emit("sidebar", user?._id);
       socketConnection?.on("conversation", (data) => {
         console.log("conversation", data);
-        const conversationUserData = data.map((conversationUser, index) => {
+        const conversationUserData = data.map((conversationUser) => {
           if (
             conversationUser?.sender?._id === conversationUser?.reciever?._id
           ) {
@@ -52,93 +51,97 @@ export default function SideBar() {
   return (
     <>
       <Providers>
-        <div className="w-full h-screen">
+        <div className="w-full h-screen bg-gray-50">
           <div className="w-full">
-            <div className="h-16 items-center bg-white ">
-              <div className="text-2xl font-bold font-roboto p-4  text-black">
+            <div className="h-16 bg-white flex flex-col justify-center items-start px-4">
+              <div className="text-xl sm:text-2xl font-bold font-roboto mt-4 text-black">
                 Message
-                <p className="text-sm mt-1 font-roboto font-normal text-slate-500">
+                <p className="text-xs sm:text-sm mt-1 font-roboto font-normal text-slate-500">
                   {moment().format("dddd")},{moment().format(" Do MMMM, YYYY")}
                 </p>
               </div>
             </div>
-            <div className=" bg-white h-[calc(94.5vh-65px)] py-4 px-2 overflow-x-hidden overflow-y-auto scrollbar-none">
-              <div className="flex justify-center items-center mt-4 ml-4 h-8 w-64 bg-gray-100 rounded-3xl">
-                <div className="h-12 w-12 flex justify-center items-center ">
-                  <CiSearch size={23} />
+
+            <div className="bg-white h-[calc(100vh-4rem)] py-4 px-2 overflow-y-auto scrollbar-none">
+              {/* Search Bar */}
+              <div className="flex justify-center items-center mt-4 mx-2 sm:mx-4 h-10 sm:h-12 bg-gray-100 rounded-3xl">
+                <div className="h-full w-10 flex justify-center items-center">
+                  <CiSearch size={20} className="sm:text-lg" />
                 </div>
                 <input
                   type="text"
                   placeholder="Search now..."
-                  className="w-full outline-none p-1 h-full bg-gray-100 rounded-3xl z-20 px-4 "
-                  // onChange={(e) => setSearch(e.target.value)}
-                  // value={search}
-                  // onFocus={() => setOpenModel(true)}
+                  className="flex-1 outline-none p-1 bg-gray-100 rounded-3xl px-4 text-sm sm:text-base"
                 />
-                <p className="mr-3 text-gray-600">/F</p>
+                <p className="mr-3 text-xs sm:text-sm text-gray-600">/F</p>
               </div>
+
+              {/* No Users Message */}
               {allUser.length === 0 && (
-                <div className="mt-14">
+                <div className="mt-12 sm:mt-14">
                   <div className="flex justify-center items-center my-3 text-slate-600">
-                    <FiArrowUpLeft size={50} />
+                    <FiArrowUpLeft size={40} className="sm:text-5xl" />
                   </div>
-                  <div className="text-lg text-slate-500 text-center">
+                  <div className="text-sm sm:text-lg text-slate-500 text-center">
                     Explore users to start a conversation with.
                     <p className="flex gap-2 justify-center mt-2 text-slate-500">
-                      Use <FaUserPlus size={25} className="text-slate-600" /> to
-                      add users
+                      Use{" "}
+                      <FaUserPlus
+                        size={20}
+                        className="sm:text-2xl text-slate-600"
+                      />{" "}
+                      to add users
                     </p>
                   </div>
                 </div>
               )}
-              {allUser.map((conv, index) => {
+
+              {/* User Conversations */}
+              {allUser.map((conv) => {
                 const createdAt = conv?.lastMsg?.createdAt;
                 const messageDate = moment(createdAt);
+
                 return (
                   <Link
                     href={"/" + conv?.userDetails?._id}
                     key={conv?._id}
-                    className="flex items-center mt-[6px] gap-3 py-3 px-2 rounded hover:bg-slate-100 hover:border-primary cursor-pointer"
+                    className="flex items-center mt-3 sm:mt-[6px] gap-2 sm:gap-3 py-3 px-2 rounded hover:bg-slate-100 hover:border-primary cursor-pointer"
                   >
-                    <div>
-                      <Avatar
-                        imageUrl={conv?.userDetails?.profile_pic}
-                        name={conv?.userDetails?.name}
-                        height={40}
-                        width={40}
-                      />
-                    </div>
-                    <div>
-                      <div className="flex">
-                        <div className="text-ellipsis w-40 text-sm flex font-semibold line-clamp-1" >{conv?.userDetails?.name}</div>
-                        <div className="text-xs">
-                        {messageDate.isSame(moment(), 'day') ? messageDate.format('hh:mm A') : messageDate.format('DD/MM/YY') }
-                        </div>
+                    <Avatar
+                      imageUrl={conv?.userDetails?.profile_pic}
+                      name={conv?.userDetails?.name}
+                      height={35}
+                      width={35}
+                    />
+                    <div className="flex-1">
+                      <div className="flex justify-between text-sm sm:text-base">
+                        <span className="font-semibold truncate">
+                          {conv?.userDetails?.name}
+                        </span>
+                        <span className="text-xs sm:text-sm text-gray-500">
+                          {messageDate.isSame(moment(), "day")
+                            ? messageDate.format("hh:mm A")
+                            : messageDate.format("DD/MM/YY")}
+                        </span>
                       </div>
-                      <div className="text-slate-500 text-xs flex items-center gap-1 ">
-                        <div className="flex items-center gap-1">
-                          {conv?.lastMsg?.imageUrl && (
-                            <div className="flex items-center gap-1">
-                              <span>
-                                <FaImage />
-                              </span>
-                              {!conv?.lastMsg?.text && <span>Image</span>}
-                            </div>
-                          )}
-                          {conv?.lastMsg?.videoUrl && (
-                            <div className="flex items-center gap-1">
-                              <span>
-                                <FaVideo />
-                              </span>
-                              {!conv?.lastMsg?.text && <span>Video</span>}
-                            </div>
-                          )}
-                        </div>
-                        <p className="line-clamp-1">{conv?.lastMsg?.text}</p>
+                      <div className="text-xs sm:text-sm text-gray-500 flex items-center gap-1 truncate">
+                        {conv?.lastMsg?.imageUrl && (
+                          <span className="flex items-center gap-1">
+                            <FaImage />
+                            {!conv?.lastMsg?.text && <span>Image</span>}
+                          </span>
+                        )}
+                        {conv?.lastMsg?.videoUrl && (
+                          <span className="flex items-center gap-1">
+                            <FaVideo />
+                            {!conv?.lastMsg?.text && <span>Video</span>}
+                          </span>
+                        )}
+                        <span>{conv?.lastMsg?.text}</span>
                       </div>
                     </div>
                     {Boolean(conv?.unseenMessage) && (
-                      <p className="text-xs bg-primary rounded-full text-white font-semibold p-1 ml-auto w-5 h-5 flex items-center justify-center ">
+                      <p className="text-xs sm:text-sm bg-primary rounded-full text-white font-semibold px-2 py-1">
                         {conv?.unseenMessage}
                       </p>
                     )}

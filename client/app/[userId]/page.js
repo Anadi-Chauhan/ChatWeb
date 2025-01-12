@@ -343,15 +343,15 @@ export default function MessagePage() {
           style={{ backgroundImage: `url(${background})` }}
           className="w-full bg-no-repeat bg-contain bg-center overflow-hidden rounded-b-lg h-full"
         >
-          <header className="sticky top-0 h-16 bg-white grid grid-cols-[950px,2fr,2fr,1fr] items-center px-3">
-            <div className="flex items-center gap-4">
+          <header className="sticky top-0 h-16 bg-white grid grid-cols-[1fr,auto,auto,auto] items-center px-2 sm:px-4 md:px-6">
+            <div className="flex items-center gap-2 sm:gap-4">
               <Link
                 href="/"
                 className=" lg:hidden flex justify-center items-center"
               >
                 <MdOutlineArrowBackIosNew size={16} />
               </Link>
-              <div className="flex mt-2">
+              <div className="flex items-center">
                 <Avatar
                   width={50}
                   height={50}
@@ -361,10 +361,10 @@ export default function MessagePage() {
                 />
               </div>
               <div>
-                <h3 className="font-semibold text-lg my-0 mt-1">
+                <h3 className="font-semibold text-sm sm:text-base md:text-lg my-0 mt-1">
                   {dataUser?.name}
                 </h3>
-                <p className="-my-2 text-sm">
+                <p className="text-xs sm:text-sm">
                   {dataUser.online ? (
                     <span className="text-green-700">Online</span>
                   ) : (
@@ -373,23 +373,19 @@ export default function MessagePage() {
                 </p>
               </div>
             </div>
-            <div>
-              <button>
-                <IoCall onClick={handleCallUser} size={25} />
+            <div className="flex gap-4">
+              <button className="hidden sm:block">
+                <IoCall onClick={handleCallUser} size={20} />
               </button>
-            </div>
-            <div>
-              <button>
-                <IoMdVideocam size={25} />
+              <button className="hidden sm:block">
+                <IoMdVideocam size={20} />
               </button>
-            </div>
-            <div>
               <button className="cursor-pointer hover:text-primary">
-                <BiDotsVertical size={25} />
+                <BiDotsVertical size={20} />
               </button>
             </div>
           </header>
-          <section className="h-[calc(95vh-128px)] p-3 overflow-hidden relative bg-white ">
+          <section className="lg:h-[calc(95vh-8rem)] sm:h-[calc(100vh-128px)] p-2 sm:p-3 overflow-hidden relative bg-white ">
             <div
               className="h-[78.8vh] overflow-hidden bg-gray-100 rounded-lg  p-4"
               ref={currentMessage}
@@ -397,7 +393,8 @@ export default function MessagePage() {
               <div className="h-[70vh] flex flex-col overflow-scroll scrollbar-none">
                 {allMessage.map((msg, index) => {
                   const isSameUserAsPrevious =
-                  index > 0 && allMessage[index - 1]?.msgByUserId === msg.msgByUserId;
+                    index > 0 &&
+                    allMessage[index - 1]?.msgByUserId === msg.msgByUserId;
                   return (
                     <div
                       key={msg._id}
@@ -405,53 +402,54 @@ export default function MessagePage() {
                         user._id === msg.msgByUserId ? "ml-auto" : ""
                       }`}
                     >
-                      {!isSameUserAsPrevious &&  (user._id === msg.msgByUserId ? (
-                        <div className="flex gap-3 justify-center items-center">
-                          <p className="text-xs w-fit">
-                            {moment(msg.createdAt).format("hh:mm A")}
-                          </p>
-                          <div className="flex justify-center items-center gap-2">
-                            <p className="text-xs font-bold">
-                              {user._id === msg.msgByUserId
-                                ? "You"
-                                : `${msg.sender_name}`}
+                      {!isSameUserAsPrevious &&
+                        (user._id === msg.msgByUserId ? (
+                          <div className="flex gap-3 justify-center items-center">
+                            <p className="text-xs w-fit">
+                              {moment(msg.createdAt).format("hh:mm A")}
                             </p>
-                            <Avatar
-                              width={30}
-                              height={30}
-                              imageUrl={
-                                msg.sender_profile_pic ||
-                                msg.reciever_profile_pic
-                              }
-                              name={msg.sender_name || msg.reciever_name}
-                              userId={msg?._id}
-                            />
+                            <div className="flex justify-center items-center gap-2">
+                              <p className="text-xs font-bold">
+                                {user._id === msg.msgByUserId
+                                  ? "You"
+                                  : `${msg.sender_name}`}
+                              </p>
+                              <Avatar
+                                width={30}
+                                height={30}
+                                imageUrl={
+                                  msg.sender_profile_pic ||
+                                  msg.reciever_profile_pic
+                                }
+                                name={msg.sender_name || msg.reciever_name}
+                                userId={msg?._id}
+                              />
+                            </div>
                           </div>
-                        </div>
-                      ) : (
-                        <div className="flex gap-3 justify-center items-center">
-                          <div className="flex justify-center items-center gap-2">
-                            <Avatar
-                              width={30}
-                              height={30}
-                              imageUrl={
-                                msg.sender_profile_pic ||
-                                msg.reciever_profile_pic
-                              }
-                              name={msg.sender_name || msg.reciever_name}
-                              userId={msg?._id}
-                            />
-                            <p className="text-xs font-bold">
-                              {user._id === msg.msgByUserId
-                                ? "You"
-                                : `${msg.sender_name}`}
+                        ) : (
+                          <div className="flex gap-3 justify-center items-center">
+                            <div className="flex justify-center items-center gap-2">
+                              <Avatar
+                                width={30}
+                                height={30}
+                                imageUrl={
+                                  msg.sender_profile_pic ||
+                                  msg.reciever_profile_pic
+                                }
+                                name={msg.sender_name || msg.reciever_name}
+                                userId={msg?._id}
+                              />
+                              <p className="text-xs font-bold">
+                                {user._id === msg.msgByUserId
+                                  ? "You"
+                                  : `${msg.sender_name}`}
+                              </p>
+                            </div>
+                            <p className="text-xs w-fit">
+                              {moment(msg.createdAt).format("hh:mm A")}
                             </p>
                           </div>
-                          <p className="text-xs w-fit">
-                            {moment(msg.createdAt).format("hh:mm A")}
-                          </p>
-                        </div>
-                ))}
+                        ))}
 
                       <p
                         className={` px-4 -mb-1 py-1 w-fit text-sm rounded-2xl min-w-14 ${
@@ -487,35 +485,38 @@ export default function MessagePage() {
                   );
                 })}
 
-                <section className="h-12 z-20 flex items-center absolute bottom-7 gap-4  px-1   ">
-                  <div className="flex justify-center items-center bg-white rounded-lg  w-[62.5rem]" >
-
-                  <div className=" relative">
-                    <IVSender setLoading={setLoading} setMessage={setMessage} />
-                  </div>
-                  <div className="flex justify-center items-center mt-2 rounded-full h-8 w-8">
-                    <BackgroundChanger setBackground={setBackground} />
-                  </div>
-                  <div className="flex justify-center mt-2 items-center rounded-full h-10 w-10">
-                    <EmojiPickerComponet onEmojiSelect={handleEmojiMessage} />
-                  </div>
-                  <form
-                    className="h-full w-full flex justify-center items-center"
-                   
-                  >
-                    <input
-                      type="text"
-                      placeholder="Type your message..."
-                      className="py-1 px-4 outline-none w-full h-full"
-                      value={message.text}
-                      onChange={handleOnChange}
+                <section className="h-12 z-20 flex items-center absolute bottom-7 gap-4 px-1 w-full   ">
+                  <div className="flex justify-center items-center bg-white rounded-lg lg:w-[62.5rem] sm:w-[60rem] md:w-[62.5rem] lg:h-full sm:h-12 lg:mb-0 sm:mb-20">
+                    <div className="relative lg:flex sm:hidden items-center justify-center">
+                      <IVSender
+                        setLoading={setLoading}
+                        setMessage={setMessage}
                       />
-                    
-                  </form>
+                      <div className="flex justify-center items-center mt-2 h-8">
+                        <BackgroundChanger setBackground={setBackground} />
                       </div>
-                  <button  onClick={handleSendMessage} className=" h-12 w-12  rounded-lg flex justify-center items-center bg-green-400 hover:text-white">
-                      <MdSend size={25} />
-                    </button>
+                      <div className=" mt-4 ml-2 h-10 w-10">
+                        <EmojiPickerComponet
+                          onEmojiSelect={handleEmojiMessage}
+                        />
+                      </div>
+                    </div>
+                    <form className="h-full w-full flex justify-center items-center">
+                      <input
+                        type="text"
+                        placeholder="Type your message..."
+                        className="py-1 px-4 outline-none w-full h-full"
+                        value={message.text}
+                        onChange={handleOnChange}
+                      />
+                    </form>
+                  <button
+                    onClick={handleSendMessage}
+                    className=" h-12 w-12  rounded-lg flex justify-center items-center bg-green-400 hover:text-white "
+                  >
+                    <MdSend size={25} />
+                  </button>
+                  </div>
                 </section>
               </div>
             </div>
