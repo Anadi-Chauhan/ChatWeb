@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 
-const guestMessageSchema = new mongoose.Schema(
+// Schema for individual messages
+const groupMessageSchema = new mongoose.Schema(
   {
     text: {
       type: String,
@@ -11,10 +12,10 @@ const guestMessageSchema = new mongoose.Schema(
       required: true,
       ref: "User",
     },
-    recieverUserId: {
+    groupId: {
       type: mongoose.Schema.ObjectId,
       required: true,
-      ref: "User",
+      ref: "Group",
     },
   },
   {
@@ -22,31 +23,39 @@ const guestMessageSchema = new mongoose.Schema(
   }
 );
 
-const guestConversationSchema = new mongoose.Schema({
-    sender : {
-        type : mongoose.Schema.ObjectId,
-        required : true,
-        ref : 'User'
-    },    
-    reciever : {
-        type : mongoose.Schema.ObjectId,
-        required : true,
-        ref : 'User'
-    },    
-    messages : [
-        {
-            type : mongoose.Schema.ObjectId,
-            ref : "Message"
-        }
-    ]   
-},{
-    timestamps : true
-})
+// Schema for group conversations
+const groupConversationSchema = new mongoose.Schema(
+  {
+    groupId: {
+      type: mongoose.Schema.ObjectId,
+      required: true,
+      ref: "Group", // Reference to the Group collection
+    },
+    messages: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: "Message", // Reference to the individual messages
+      },
+    ],
+    participants: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: "User", // Users participating in the group
+      },
+    ],
+  },
+  {
+    timestamps: true,
+  }
+);
 
-const GuestMessageModel = mongoose.model("Message",guestMessageSchema)
-const GuestConversationModel = mongoose.model("Conversation",guestConversationSchema)
+const GroupMessageModel = mongoose.model("GroupMessage", groupMessageSchema);
+const GroupConversationModel = mongoose.model(
+  "GroupConversation",
+  groupConversationSchema
+);
 
 module.exports = {
-    GuestMessageModel,
-    GuestConversationModel,
-}
+  GroupMessageModel,
+  GroupConversationModel,
+};
