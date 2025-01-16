@@ -355,12 +355,8 @@ export default function MessagePage() {
       console.log("wvyvwbwsuxsv", socketConnection);
 
       socketConnection.on("message", (data) => {
-        console.log("XXXX", data);
-        console.log("XXXXdddddd");
         const latestMessageSender = data[data.length - 1]?.msgByUserId;
-        console.log("ddddd", latestMessageSender);
         if (params.userId || user?._id === latestMessageSender) {
-          console.log("YYYYY", latestMessageSender);
           setAllMessage(data);
         }
       });
