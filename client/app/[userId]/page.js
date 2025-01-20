@@ -428,7 +428,6 @@ export default function MessagePage() {
           <section className="lg:h-[calc(95vh-8rem)] sm:h-[calc(100vh-128px)] p-2 sm:p-3 overflow-hidden relative bg-white ">
             <div
               className="h-[78.8vh] overflow-hidden bg-gray-100 rounded-lg  p-4"
-              ref={currentMessage}
             >
               <div className="h-[70vh] flex flex-col overflow-scroll scrollbar-none">
                 {allMessage.map((msg, index) => {
@@ -438,6 +437,7 @@ export default function MessagePage() {
                   return (
                     <div
                       key={msg._id}
+                      currentMessage={index === allMessage.length - 1 ? currentMessage : null}
                       className={`p-1 py-2 rounded w-fit min-w-14 ${
                         user._id === msg.msgByUserId ? "ml-auto" : ""
                       }`}
