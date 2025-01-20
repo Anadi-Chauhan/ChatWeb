@@ -13,6 +13,10 @@ const messageSchema = new mongoose.Schema({
         type : String,
         default : ""
     },
+    audioUrl : {
+        type : String,
+        default : ""
+    },
     msgByUserId : {
         type : mongoose.Schema.ObjectId,
         required : true,

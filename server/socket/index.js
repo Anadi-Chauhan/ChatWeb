@@ -144,6 +144,7 @@ io.on("connection", async (socket) => {
       text: data?.text,
       imageUrl: data?.imageUrl,
       videoUrl: data?.videoUrl,
+      audioUrl : data?.audioUrl,
       msgByUserId: data?.msgByUserId,
       recieverUserId: data?.recievedByUserId,
       sender_name: data?.sender_name,
