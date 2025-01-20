@@ -437,7 +437,7 @@ export default function MessagePage() {
                   return (
                     <div
                       key={msg._id}
-                      currentMessage={index === allMessage.length - 1 ? currentMessage : null}
+                     ref={index === allMessage.length - 1 ? currentMessage : null}
                       className={`p-1 py-2 rounded w-fit min-w-14 ${
                         user._id === msg.msgByUserId ? "ml-auto" : ""
                       }`}
