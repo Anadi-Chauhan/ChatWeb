@@ -562,6 +562,12 @@ export default function MessagePage() {
                         className="py-1 px-4 outline-none w-full h-full"
                         value={message.text}
                         onChange={handleOnChange}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            e.preventDefault(); // Prevent form submission or default behavior
+                            handleSendMessage();
+                          }
+                        }}
                       />
                     </form>
                   </div>
