@@ -288,7 +288,7 @@ export default function MessagePage() {
         });
       });
       peer.on("stream", (stream) => {
-        myVideo.current.srcObject = stream;
+        // myVideo.current.srcObject = stream;
         remoteVideo.current.srcObject = stream;
       });
       socketConnection.on("call-accepted", (signal) => {
@@ -317,7 +317,7 @@ export default function MessagePage() {
       console.log("Remote stream (receiver):", remoteStream);
       if (remoteVideo.current) {
         remoteVideo.current.srcObject = remoteStream;
-        myVideo.current.srcObject = remoteStream;
+        // myVideo.current.srcObject = remoteStream;
       }
     });
     peer.signal(call.signal);
@@ -639,8 +639,11 @@ export default function MessagePage() {
                 <LoadingStyle bg="bg-slate-300" />
               </div>
             )}
+
+            <div className="hidden" >
             <video height="200px" width="300px" ref={myVideo} autoPlay />
             <video height="300px" width="300px" ref={remoteVideo} autoPlay />
+            </div>
 
             {calling && (
               <div
@@ -659,7 +662,7 @@ export default function MessagePage() {
                         className="w-full h-full object-cover"
                         ref={myVideo}
                         autoPlay
-                        muted
+                        // muted
                       />
                     </div>
                     <div
@@ -745,7 +748,7 @@ export default function MessagePage() {
                         className="w-full h-full object-cover"
                         ref={myVideo}
                         autoPlay
-                        muted
+                        // muted
                       />
                     </div>
                     <div
