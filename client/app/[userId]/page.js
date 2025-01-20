@@ -32,7 +32,7 @@ import EmojiPickerComponet from "../MyComponents/MessagePageComponents/EmojiPick
 import BackgroundChanger from "../MyComponents/MessagePageComponents/BackgroundChange";
 import IVSender from "../MyComponents/MessagePageComponents/IVSender";
 import VoiceMessage from "../MyComponents/VoiceMessage";
-import { AudioLinesIcon } from "lucide-react";
+import { AudioLinesIcon } from "lucide-react"
 
 export default function MessagePage() {
   const params = useParams();
@@ -552,7 +552,7 @@ export default function MessagePage() {
                         />
                       </div>
                     </div>
-                    <div className=" mt-4 ml-2 h-10 w-10">
+                    <div className="mt-2 h-10 w-10">
                       <VoiceMessage setMessage={setMessage} />
                     </div>
                     <form className="h-full w-full flex justify-center items-center">
