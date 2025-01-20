@@ -1,7 +1,4 @@
 import Avatar from "@/app/Components/helpers/Avatar";
-import Link from "next/link";
-
-
 
 export default function GuestUserSearchCard({ user }) {
   return (

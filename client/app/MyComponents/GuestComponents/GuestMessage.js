@@ -3,7 +3,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import { MdOutlineArrowBackIosNew, MdSend } from "react-icons/md";
-import BackgroundChanger from "../MessagePageComponents/BackgroundChange";
 import EmojiPickerComponet from "../MessagePageComponents/EmojiPicker";
 import { useEffect, useRef, useState } from "react";
 import moment from "moment";
@@ -144,11 +143,11 @@ export default function GroupMessage() {
           </header>
         </section>
         <section className="h-[calc(100vh-128px)] grid grid-cols-[1fr,220px] overflow-x-hidden overflow-y-scroll relative bg-slate-300 bg-opacity-40">
-          <div className="flex relative flex-col" ref={currentMessage}>
+          <div className="flex relative flex-col " ref={currentMessage}>
             {allMessages.map((msg, index) => (
               <div
                 key={index}
-                className={`p-2 bg-green-400 flex  gap-2 w-full`}
+                className={`p-2 bg-green-400 flex  gap-2 w-full border-b-[1px] border-b-green-600`}
               >
                 <button onClick={() => handleShowUser(index)} className="cursor-pointer">
                   <Avatar name={msg.senderName} height={40} width={40} />
@@ -184,11 +183,8 @@ export default function GroupMessage() {
             <GuestBar />
           </div>
         </section>
-        <section className="h-16 bg-white flex items-center px-1">
-          <div className="flex justify-center items-center rounded-full hover:bg-primary hover:text-white h-10 w-10">
-            <BackgroundChanger />
-          </div>
-          <div className="flex justify-center items-center rounded-full hover:bg-primary hover:text-white h-10 w-10">
+        <section className="h-16 bg-white flex items-center px-1 border-t-[1px] border-t-slate-300">
+          <div className="flex justify-center items-center mt-2 rounded-full hover:bg-primary hover:text-white h-10 w-10">
             <EmojiPickerComponet />
           </div>
           <form className="h-full w-full flex" onSubmit={handleSendMessage}>
@@ -199,7 +195,7 @@ export default function GroupMessage() {
               value={message.text}
               onChange={handleOnChange}
             />
-            <button className="h-10 w-10 flex justify-center items-center rounded-full hover:bg-primary hover:text-white">
+            <button className="h-10 w-10 mt-3 flex justify-center items-center rounded-full hover:bg-primary hover:text-white">
               <MdSend size={25} />
             </button>
           </form>

@@ -31,6 +31,8 @@ import axios from "axios";
 import EmojiPickerComponet from "../MyComponents/MessagePageComponents/EmojiPicker";
 import BackgroundChanger from "../MyComponents/MessagePageComponents/BackgroundChange";
 import IVSender from "../MyComponents/MessagePageComponents/IVSender";
+import VoiceMessage from "../MyComponents/VoiceMessage";
+import { AudioLinesIcon } from "lucide-react";
 
 export default function MessagePage() {
   const params = useParams();
@@ -59,6 +61,7 @@ export default function MessagePage() {
     text: "",
     imageUrl: "",
     videoUrl: "",
+    audioUrl: "",
   });
   const [loading, setLoading] = useState(false);
   const [allMessage, setAllMessage] = useState([]);
@@ -80,6 +83,7 @@ export default function MessagePage() {
   const connectionRef = useRef();
   const dispatch = useDispatch();
   const router = useRouter();
+  const audioRef = useRef(null);
   const [showComponenet, setShowComponent] = useState(false);
   const [userArray, setUserArray] = useState([]);
 
@@ -112,7 +116,6 @@ export default function MessagePage() {
     fetchUserDetails();
   }, []);
 
-  // Socket connection
   useEffect(() => {
     const socket = getSocket(); // Get the singleton socket instance
     console.log("kdjsidvbdsjbj");
@@ -140,7 +143,7 @@ export default function MessagePage() {
   }, [allMessage]);
 
   const handleEmojiMessage = (emoji) => {
-    setMessage((prev) => ({ text: prev.text + emoji })); // Append the emoji
+    setMessage((prev) => ({ text: prev.text + emoji }));
   };
 
   const handleClearUploadPhoto = () => {
@@ -170,10 +173,15 @@ export default function MessagePage() {
       };
     });
   };
-  console.log("mhbjshd", user.name);
+
   const handleSendMessage = (e) => {
     // e.preventDefault();
-    if (message.text || message.imageUrl || message.videoUrl) {
+    if (
+      message.text ||
+      message.imageUrl ||
+      message.videoUrl ||
+      message.audioUrl
+    ) {
       if (socketConnection) {
         socketConnection.emit("new-message", {
           sender: user?._id,
@@ -181,6 +189,7 @@ export default function MessagePage() {
           text: message.text,
           imageUrl: message.imageUrl,
           videoUrl: message.videoUrl,
+          audioUrl: message.audioUrl,
           msgByUserId: user?._id,
           recievedByUserId: params.userId,
           sender_name: user.name,
@@ -188,14 +197,17 @@ export default function MessagePage() {
           sender_profile_pic: user.profile_pic,
           reciever_profile_pic: params.userId.profile_pic,
         });
+        console.log("message", message);
         setMessage({
           text: "",
           imageUrl: "",
           videoUrl: "",
+          audioUrl: "",
         });
       }
     }
   };
+
   const setupMedia = () => {
     navigator.mediaDevices
       .getUserMedia({ video: true, audio: true })
@@ -221,14 +233,11 @@ export default function MessagePage() {
     setShow(true);
   };
 
-  const audioRef = useRef(null);
-
   useEffect(() => {
     if (!callAccepted && show) {
       audioRef.current?.play();
     } else {
       audioRef.current?.pause();
-      // audioRef.current.currentTime = 0; // Reset playback position
     }
   }, [callAccepted, show]);
 
@@ -253,9 +262,9 @@ export default function MessagePage() {
   const handleCallUser = () => {
     // setupMedia();
     setCalling(true);
-     enableMedia();
+    enableMedia();
     // socketConnection.emit("call-user", params.userId);
-    
+
     const peer = new Peer({
       initiator: true,
       trickle: false,
@@ -281,7 +290,6 @@ export default function MessagePage() {
       peer.on("stream", (stream) => {
         myVideo.current.srcObject = stream;
         remoteVideo.current.srcObject = stream;
-       
       });
       socketConnection.on("call-accepted", (signal) => {
         setCallAccepted(true);
@@ -310,7 +318,6 @@ export default function MessagePage() {
       if (remoteVideo.current) {
         remoteVideo.current.srcObject = remoteStream;
         myVideo.current.srcObject = remoteStream;
-
       }
     });
     peer.signal(call.signal);
@@ -367,6 +374,7 @@ export default function MessagePage() {
     }
   }, [socketConnection, params.userId, user]);
 
+
   return (
     <>
       {showComponenet ? (
@@ -403,6 +411,7 @@ export default function MessagePage() {
                   )}
                 </p>
               </div>
+
             </div>
             <div className="flex gap-4">
               <button className="hidden sm:block">
@@ -481,16 +490,17 @@ export default function MessagePage() {
                             </p>
                           </div>
                         ))}
-
-                      <p
-                        className={` px-4 -mb-1 py-1 w-fit text-sm rounded-2xl min-w-14 ${
-                          user._id === msg.msgByUserId
-                            ? "bg-green-500 mr-10"
-                            : "bg-white ml-7"
-                        }`}
-                      >
-                        {msg.text}
-                      </p>
+                      {msg.text && (
+                        <p
+                          className={` px-4 -mb-1 py-1 w-fit text-sm rounded-2xl min-w-14 ${
+                            user._id === msg.msgByUserId
+                              ? "bg-green-500 mr-10"
+                              : "bg-white ml-7"
+                          }`}
+                        >
+                          {msg.text}
+                        </p>
+                      )}
 
                       <div className="w-full">
                         {msg?.imageUrl && (
@@ -504,12 +514,22 @@ export default function MessagePage() {
                         )}
                         {msg?.videoUrl && (
                           <video
-                            src={msg?.videoUrl}
+                            src={msg?.videoUrl === `data:video/webm;base64,${msg.videoUrl}` ? msg?.videoUrl === `data:video/webm;base64,${msg.videoUrl}` : msg.videoUrl }
                             controls
                             muted
                             alt="no Video"
                             className="w-[300px] h-[300px] object-scale-down"
                           />
+                        )}
+                        {msg.audioUrl && (
+                          <div>
+                            {/* <AudioLinesIcon /> */}
+                            <audio
+                              controls
+                              src={`data:audio/webm;base64,${msg.audioUrl}`}
+                              type="audio/webm"
+                            />
+                          </div>
                         )}
                       </div>
                     </div>
@@ -523,14 +543,17 @@ export default function MessagePage() {
                         setLoading={setLoading}
                         setMessage={setMessage}
                       />
-                      <div className="flex justify-center items-center mt-2 h-8">
+                      {/* <div className="flex justify-center items-center mt-2 h-8">
                         <BackgroundChanger setBackground={setBackground} />
-                      </div>
+                      </div> */}
                       <div className=" mt-4 ml-2 h-10 w-10">
                         <EmojiPickerComponet
                           onEmojiSelect={handleEmojiMessage}
                         />
                       </div>
+                    </div>
+                    <div className=" mt-4 ml-2 h-10 w-10">
+                      <VoiceMessage setMessage={setMessage} />
                     </div>
                     <form className="h-full w-full flex justify-center items-center">
                       <input
@@ -580,11 +603,27 @@ export default function MessagePage() {
                 </div>
                 <div className="bg-white p-3 ">
                   <video
-                    src={message.videoUrl}
+                    src={message.videoUrl === `data:video/webm;base64,${message.videoUrl}` ?`data:video/webm;base64,${message.videoUrl}` : message.videoUrl }
                     className="aspect-square w-full h-full max-w-sm m-2 object-scale-down"
                     autoPlay
                     controls
                     alt="Upload Video"
+                  />
+                </div>
+              </div>
+            )}
+            {message.audioUrl && (
+              <div className="w-full h-full  sticky bottom-0 bg-slate-700 bg-opacity-30 flex justify-center items-center rounded overflow-hidden">
+                <div
+                  className="w-fit p-2 absolute top-0 right-0 cursor-pointer hover:text-red-600"
+                  onClick={handleClearUploadVideo}
+                >
+                  <RxCross2 size={30} />
+                </div>
+                <div className="bg-white p-3 ">
+                  <audio
+                    src={`data:audio/webm;base64,${message.audioUrl}`}
+                    controls
                   />
                 </div>
               </div>
@@ -596,6 +635,7 @@ export default function MessagePage() {
             )}
             <video height="200px" width="300px" ref={myVideo} autoPlay />
             <video height="300px" width="300px" ref={remoteVideo} autoPlay />
+
             {calling && (
               <div
                 style={{ backgroundImage: `url(${dataUser.profile_pic})` }}
@@ -616,7 +656,9 @@ export default function MessagePage() {
                         muted
                       />
                     </div>
-                    <div className={`w-60 h-60 border-2 border-gray-300 rounded-lg overflow-hidden shadow-lg`}>
+                    <div
+                      className={`w-60 h-60 border-2 border-gray-300 rounded-lg overflow-hidden shadow-lg`}
+                    >
                       <video
                         className="w-full h-full object-cover"
                         ref={remoteVideo}
@@ -700,7 +742,9 @@ export default function MessagePage() {
                         muted
                       />
                     </div>
-                    <div className={`w-60 h-60 border-2 border-gray-300 rounded-lg overflow-hidden shadow-lg`}>
+                    <div
+                      className={`w-60 h-60 border-2 border-gray-300 rounded-lg overflow-hidden shadow-lg`}
+                    >
                       <video
                         className="w-full h-full object-cover"
                         ref={remoteVideo}
@@ -719,7 +763,10 @@ export default function MessagePage() {
                       </button>
                     </div>
                     <div className="bg-red-500 p-[6px]  flex rounded-md">
-                      <button onClick={handleEndCall} className="flex items-center text-white gap-2 ">
+                      <button
+                        onClick={handleEndCall}
+                        className="flex items-center text-white gap-2 "
+                      >
                         Decline
                         <MdCallEnd />
                       </button>
