@@ -5,12 +5,14 @@ import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { setToken } from "@/app/redux/userSlice";
 import { toast } from "sonner";
+import LoadingStyle from "../Loader";
 
 export default function VerifyOtp() {
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [email, setEmail] = useState("");
   const router = useRouter()
   const dispatch = useDispatch()
+  const [veryfying, setVeryfying] = useState(false)
 
   // Load email from session storage
   useEffect(() => {
@@ -49,6 +51,10 @@ export default function VerifyOtp() {
 
     console.log(finalOtp);
 
+    if (veryfying) {
+      toast("Wait until we verify you")
+    }
+
     try {
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/verify-otp`,
@@ -61,6 +67,7 @@ export default function VerifyOtp() {
         sessionStorage.setItem("email", email);
         dispatch(setToken(response.data.token));
         localStorage.setItem("token", response.data.token);
+        setVeryfying(false)
         router.push(`/${email}`)
       } else {
         toast.error("Failed to verify OTP.");
@@ -92,6 +99,7 @@ export default function VerifyOtp() {
                   placeholder="0"
                   value={digit}
                   className="w-11 bg-[#0a0a0aa8] text-md border border-green-900 rounded-lg px-4 py-2 focus:outline-none focus:ring focus:ring-green-400 text-center"
+                  disabled={veryfying}
                   onChange={(e) => handleOtpChange(e.target.value, index)}
                   onKeyDown={(e) => {
                     // Handle backspace navigation
@@ -108,15 +116,19 @@ export default function VerifyOtp() {
             <div className="flex float-end mt-4 mr-5">
               <button
                 type="submit"
+                onClick={()=>(setVeryfying(true))}
                 className="font-semibold px-4 py-2 text-sm bg-blue-500 rounded-lg hover:bg-blue-600 focus:ring focus:ring-blue-500"
               >
-                Verify OTP
+                {veryfying ? <LoadingStyle /> :<p>Verify OTP</p>}
               </button>
             </div>
           </div>
         </form>
       </div>
-      <div className="bg-green-900 w-[28rem] max-h-0.5 h-0.5 "></div>
+      <div className="bg-green-900 w-[28rem] max-h-0.5 h-0.5 ">
+        Anadi Chauhan...
+      </div>
     </div>
+
   );
 }

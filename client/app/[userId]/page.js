@@ -32,7 +32,7 @@ import EmojiPickerComponet from "../MyComponents/MessagePageComponents/EmojiPick
 import BackgroundChanger from "../MyComponents/MessagePageComponents/BackgroundChange";
 import IVSender from "../MyComponents/MessagePageComponents/IVSender";
 import VoiceMessage from "../MyComponents/VoiceMessage";
-import { AudioLinesIcon } from "lucide-react"
+import { AudioLinesIcon } from "lucide-react";
 
 export default function MessagePage() {
   const params = useParams();
@@ -65,6 +65,7 @@ export default function MessagePage() {
   });
   const [loading, setLoading] = useState(false);
   const [allMessage, setAllMessage] = useState([]);
+  const [messaging, setMessaging] = useState(false);
   const currentMessage = useRef();
   const [calling, setCalling] = useState(false);
   const [called, setCalled] = useState(false);
@@ -176,12 +177,14 @@ export default function MessagePage() {
 
   const handleSendMessage = (e) => {
     // e.preventDefault();
+    setMessaging(true)
     if (
       message.text ||
       message.imageUrl ||
       message.videoUrl ||
       message.audioUrl
     ) {
+
       if (socketConnection) {
         socketConnection.emit("new-message", {
           sender: user?._id,
@@ -364,6 +367,8 @@ export default function MessagePage() {
       socketConnection.on("message", (data) => {
         const latestMessageSender = data[data.length - 1]?.msgByUserId;
         if (params.userId || user?._id === latestMessageSender) {
+
+          setMessaging(false)
           setAllMessage(data);
         }
       });
@@ -373,7 +378,6 @@ export default function MessagePage() {
       setShowComponent(true);
     }
   }, [socketConnection, params.userId, user]);
-
 
   return (
     <>
@@ -411,7 +415,6 @@ export default function MessagePage() {
                   )}
                 </p>
               </div>
-
             </div>
             <div className="flex gap-4">
               <button className="hidden sm:block">
@@ -426,18 +429,17 @@ export default function MessagePage() {
             </div>
           </header>
           <section className="lg:h-[calc(95vh-8rem)] sm:h-[calc(100vh-128px)] p-2 sm:p-3 overflow-hidden relative bg-white ">
-            <div
-              className="h-[78.8vh] overflow-hidden bg-gray-100 rounded-lg  p-4"
-            >
+            <div className="h-[78.8vh] overflow-hidden bg-gray-100 rounded-lg  p-4">
               <div className="h-[70vh] flex flex-col overflow-scroll scrollbar-none">
                 {allMessage.map((msg, index) => {
                   const isSameUserAsPrevious =
                     index > 0 &&
                     allMessage[index - 1]?.msgByUserId === msg.msgByUserId;
+                    const isLatestMessage = index === allMessage.length - 1;
                   return (
                     <div
                       key={msg._id}
-                     ref={index === allMessage.length - 1 ? currentMessage : null}
+                      ref={isLatestMessage ? currentMessage : null}
                       className={`p-1 py-2 rounded w-fit min-w-14 ${
                         user._id === msg.msgByUserId ? "ml-auto" : ""
                       }`}
@@ -514,7 +516,13 @@ export default function MessagePage() {
                         )}
                         {msg?.videoUrl && (
                           <video
-                            src={msg?.videoUrl === `data:video/webm;base64,${msg.videoUrl}` ? msg?.videoUrl === `data:video/webm;base64,${msg.videoUrl}` : msg.videoUrl }
+                            src={
+                              msg?.videoUrl ===
+                              `data:video/webm;base64,${msg.videoUrl}`
+                                ? msg?.videoUrl ===
+                                  `data:video/webm;base64,${msg.videoUrl}`
+                                : msg.videoUrl
+                            }
                             controls
                             muted
                             alt="no Video"
@@ -532,6 +540,19 @@ export default function MessagePage() {
                           </div>
                         )}
                       </div>
+                      {messaging && isLatestMessage &&  (
+                        <div className="flex justify-center items-center mt-4">
+                         <p
+                          className={` px-4 -mb-1 py-1 w-fit text-sm rounded-2xl min-w-14 ${
+                            user._id === msg.msgByUserId
+                              ? "bg-green-500 mr-10"
+                              : "bg-white ml-7"
+                          }`}
+                        >
+                          <LoadingStyle />
+                        </p>
+                        </div>
+                      )}
                     </div>
                   );
                 })}
@@ -609,7 +630,12 @@ export default function MessagePage() {
                 </div>
                 <div className="bg-white p-3 ">
                   <video
-                    src={message.videoUrl === `data:video/webm;base64,${message.videoUrl}` ?`data:video/webm;base64,${message.videoUrl}` : message.videoUrl }
+                    src={
+                      message.videoUrl ===
+                      `data:video/webm;base64,${message.videoUrl}`
+                        ? `data:video/webm;base64,${message.videoUrl}`
+                        : message.videoUrl
+                    }
                     className="aspect-square w-full h-full max-w-sm m-2 object-scale-down"
                     autoPlay
                     controls
@@ -640,9 +666,9 @@ export default function MessagePage() {
               </div>
             )}
 
-            <div className="hidden" >
-            <video height="200px" width="300px" ref={myVideo} autoPlay />
-            <video height="300px" width="300px" ref={remoteVideo} autoPlay />
+            <div className="hidden">
+              <video height="200px" width="300px" ref={myVideo} autoPlay />
+              <video height="300px" width="300px" ref={remoteVideo} autoPlay />
             </div>
 
             {calling && (

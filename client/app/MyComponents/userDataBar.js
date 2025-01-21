@@ -14,7 +14,8 @@ import { useState } from "react";
 import axios from "axios";
 import SearchUser from "./SearchUser";
 import EditUSer from "./EditUser";
-import { RiEditLine, RiSeparator } from "react-icons/ri";
+import { FaHome } from "react-icons/fa";
+import { MdModeEdit } from "react-icons/md";
 
 export default function UserDataBar() {
   const [editUser, setEditUser] = useState(false);
@@ -50,9 +51,8 @@ export default function UserDataBar() {
   return (
     <>
       <Providers>
-        <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-lg p-1 border-2 border-gray-900 z-10">
+        <div className="absolute right-0 mt-2 w-32 bg-white shadow-lg rounded-lg p-1 border-2 border-slate-500  z-10">
           <div className="w-full flex flex-col">
-            {/* User Avatar */}
             <button
               title={user?.name}
               onClick={() => setEditUser(true)}
@@ -65,30 +65,38 @@ export default function UserDataBar() {
                 imageUrl={user?.profile_pic}
                 userId={user?._id}
               />
-              <p className="font-bold flex justify-center items-center mt-3">
+              <p className="font-bold flex justify-center items-center mt-1">
                 {user?.name}
               </p>
             </button>
 
-            <RiSeparator size={50} />
-
-            {/* Chat Icon */}
-            <NavLink
-              href="/"
-              className="flex justify-center items-center mb-2 cursor-pointer"
-              title="Chat"
+            <button
+              title={user?.name}
+              onClick={() => setEditUser(true)}
+              className="flex gap-2 cursor-pointer p-1"
             >
-              <IoChatbubbleEllipsesSharp size={28} />
-            </NavLink>
+              <p className="font-bold flex mt-1">
+                <MdModeEdit size={25} /><p className="font-bold ml-2 mt-1" >Edit User</p>
+              </p>
+            </button>
 
-            {/* Logout Button */}
             <button
               title="Logout"
-              className="flex justify-center items-center cursor-pointer"
+              className="flex cursor-pointer ml-2 mt-2"
               onClick={handleLogout}
             >
-              <TbLogout2 size={29} />
+              <TbLogout2 size={29} /><p className="font-bold ml-2 mt-1" >Logout</p>
             </button>
+
+            <NavLink
+              href="/"
+              className="flex ml-4 mt-2 cursor-pointer"
+              title="Chat"
+            >
+              <FaHome size={28} /><p className="font-bold ml-2 mt-1" >Home</p>
+            </NavLink>
+
+
           </div>
         </div>
         {editUser && (
@@ -98,17 +106,3 @@ export default function UserDataBar() {
     </>
   );
 }
-
-{
-  /* <Link
-                href="/room"
-                className="flex justify-center items-center mb-3 cursor-pointer"
-                title="Room List"
-                onClick={() => setOpenSearchUser(true)}
-              >
-                <AiFillHome size={26} className="mr-1" />
-              </Link> */
-}
-// {openSearchUser && (
-//   <SearchUser onClose={() => setOpenSearchUser(false)} />
-// )}
