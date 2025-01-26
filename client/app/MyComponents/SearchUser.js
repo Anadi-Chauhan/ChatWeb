@@ -34,7 +34,7 @@ export default function SearchUser({ onClose }) {
   );
   useEffect(() => {
     handleSearchUser();
-  }, [search]);
+  }, [search,handleSearchUser]);
 
   console.log("searchUser", searchUser);
 

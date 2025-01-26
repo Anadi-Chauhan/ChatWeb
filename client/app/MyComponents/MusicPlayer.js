@@ -77,7 +77,7 @@ export default function MusicPlayer({ openSpotify }) {
 
   useEffect(() => {
     main();
-  }, []);
+  });
 
   return (
     <>

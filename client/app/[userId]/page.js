@@ -304,7 +304,7 @@ export default function MessagePage() {
 
   useEffect(() => {
     fetchUserDetails();
-  }, []);
+  });
 
   useEffect(() => {
     const socket = getSocket(); // Get the singleton socket instance
@@ -371,7 +371,7 @@ export default function MessagePage() {
     socketConnection?.on("end-call", () => {
       handleEndCall(); // Trigger end call cleanup
     });
-  }, [call]);
+  }, [call,handleEndCall]);
 
  useEffect(() => {
     if (!callAccepted && show) {
