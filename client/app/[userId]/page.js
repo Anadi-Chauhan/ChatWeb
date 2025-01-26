@@ -371,7 +371,7 @@ export default function MessagePage() {
     socketConnection?.on("end-call", () => {
       handleEndCall(); // Trigger end call cleanup
     });
-  }, [call,handleEndCall]);
+  }, [call,handleEndCall,socketConnection]);
 
  useEffect(() => {
     if (!callAccepted && show) {

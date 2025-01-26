@@ -29,7 +29,7 @@ export default function GuestBar() {
       );
       useEffect(() => {
         handleSearchUser();
-      }, []);
+      }, [handleSearchUser]);
   return (
     <>
       <div className="h-full bg-white min-w-60">

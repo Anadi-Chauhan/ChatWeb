@@ -44,7 +44,7 @@ export default function UserSideBaar({ onClose }) {
             <h2 className="font-medium text-lg">Today&apos;s Quote</h2>
             <div className="font-semibold" >
             <h3>{quote && quote.quote}</h3>
-            <p className="ml-64  italic">"{quote && quote.author}"</p>
+            <p className="ml-64  italic">{quote && quote.author}</p>
             </div>
           </div>
         </div>
