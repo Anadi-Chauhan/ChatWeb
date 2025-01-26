@@ -33,8 +33,10 @@ import BackgroundChanger from "../MyComponents/MessagePageComponents/BackgroundC
 import IVSender from "../MyComponents/MessagePageComponents/IVSender";
 import VoiceMessage from "../MyComponents/VoiceMessage";
 import { AudioLinesIcon } from "lucide-react";
+import NoChat from "../MyComponents/MessagePageComponents/NoChat";
 
 export default function MessagePage() {
+  
   const params = useParams();
   const socketConnection = useSelector(
     (state) => state?.user?.socketConnection
@@ -112,36 +114,6 @@ export default function MessagePage() {
       console.log("Error:", error);
     }
   };
-
-  useEffect(() => {
-    fetchUserDetails();
-  }, []);
-
-  useEffect(() => {
-    const socket = getSocket(); // Get the singleton socket instance
-    console.log("kdjsidvbdsjbj");
-
-    socket.on("onlineUser", (data) => {
-      console.log("Online users:", data);
-      dispatch(setOnlineUser(data));
-      setUserArray(data);
-    });
-
-    dispatch(setSocketConnection(socket));
-
-    return () => {
-      socket.off("onlineUser");
-    };
-  }, [dispatch]);
-
-  useEffect(() => {
-    if (currentMessage.current) {
-      currentMessage.current.scrollIntoView({
-        behavior: "smooth",
-        block: "end",
-      });
-    }
-  }, [allMessage]);
 
   const handleEmojiMessage = (emoji) => {
     setMessage((prev) => ({ text: prev.text + emoji }));
@@ -235,32 +207,6 @@ export default function MessagePage() {
     }
     setShow(true);
   };
-
-  useEffect(() => {
-    if (!callAccepted && show) {
-      audioRef.current?.play();
-    } else {
-      audioRef.current?.pause();
-    }
-  }, [callAccepted, show]);
-
-  useEffect(() => {
-    setupMedia();
-    socketConnection?.on("call-user", (data) => {
-      setCall({
-        ...call,
-        socketId: data.from,
-        signal: data.signal,
-      });
-    });
-
-    socketConnection?.on("called-user", () => {
-      setCalled(true);
-    });
-    socketConnection?.on("end-call", () => {
-      handleEndCall(); // Trigger end call cleanup
-    });
-  }, [call]);
 
   const handleCallUser = () => {
     // setupMedia();
@@ -357,6 +303,36 @@ export default function MessagePage() {
   };
 
   useEffect(() => {
+    fetchUserDetails();
+  }, []);
+
+  useEffect(() => {
+    const socket = getSocket(); // Get the singleton socket instance
+    console.log("kdjsidvbdsjbj");
+
+    socket.on("onlineUser", (data) => {
+      console.log("Online users:", data);
+      dispatch(setOnlineUser(data));
+      setUserArray(data);
+    });
+
+    dispatch(setSocketConnection(socket));
+
+    return () => {
+      socket.off("onlineUser");
+    };
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (currentMessage.current) {
+      currentMessage.current.scrollIntoView({
+        behavior: "smooth",
+        block: "end",
+      });
+    }
+  }, [allMessage]);
+
+  useEffect(() => {
     if (socketConnection) {
       socketConnection.emit("message-page", params.userId);
       socketConnection.on("message-user", (data) => {
@@ -379,12 +355,38 @@ export default function MessagePage() {
     }
   }, [socketConnection, params.userId, user]);
 
+  useEffect(() => {
+    setupMedia();
+    socketConnection?.on("call-user", (data) => {
+      setCall({
+        ...call,
+        socketId: data.from,
+        signal: data.signal,
+      });
+    });
+
+    socketConnection?.on("called-user", () => {
+      setCalled(true);
+    });
+    socketConnection?.on("end-call", () => {
+      handleEndCall(); // Trigger end call cleanup
+    });
+  }, [call]);
+
+ useEffect(() => {
+    if (!callAccepted && show) {
+      audioRef.current?.play();
+    } else {
+      audioRef.current?.pause();
+    }
+  }, [callAccepted, show]);
+
   return (
     <>
       {showComponenet ? (
         <div
           style={{ backgroundImage: `url(${background})` }}
-          className="w-full bg-no-repeat bg-contain bg-center overflow-hidden rounded-b-lg h-full"
+          className="w-full bg-no-repeat bg-contain bg-center overflow-hidden"
         >
           <header className="sticky top-0 h-16 bg-white grid grid-cols-[1fr,auto,auto,auto] items-center px-2 sm:px-4 md:px-6">
             <div className="flex items-center gap-2 sm:gap-4">
@@ -428,9 +430,9 @@ export default function MessagePage() {
               </button>
             </div>
           </header>
-          <section className="lg:h-[calc(95vh-8rem)] sm:h-[calc(100vh-128px)] p-2 sm:p-3 overflow-hidden relative bg-white ">
-            <div className="h-[78.8vh] overflow-hidden bg-gray-100 rounded-lg  p-4">
-              <div className="h-[70vh] flex flex-col overflow-scroll scrollbar-none">
+          <section className="lg:h-[calc(88vh)] sm:h-[calc(100vh-128px)] p-2 sm:p-3 overflow-hidden relative bg-white ">
+            <div className="h-[84.5vh] overflow-hidden bg-gray-100 rounded-lg  p-4">
+              <div className="h-[72.5vh] flex flex-col overflow-scroll scrollbar-none">
                 {allMessage.map((msg, index) => {
                   const isSameUserAsPrevious =
                     index > 0 &&
@@ -494,10 +496,10 @@ export default function MessagePage() {
                         ))}
                       {msg.text && (
                         <p
-                          className={` px-4 -mb-1 py-1 w-fit text-sm rounded-2xl min-w-14 ${
+                          className={` px-4 -mb-1 py-4 w-fit text-[0.9rem] rounded-lg min-w-16 ${
                             user._id === msg.msgByUserId
                               ? "bg-green-500 mr-10"
-                              : "bg-white ml-7"
+                              : "bg-white ml-9"
                           }`}
                         >
                           {msg.text}
@@ -822,7 +824,7 @@ export default function MessagePage() {
           </section>
         </div>
       ) : (
-        <div className="flex justify-center items-center">Hi</div>
+        <NoChat />
       )}
     </>
   );

@@ -61,7 +61,7 @@ export default function SearchUser({ onClose }) {
       <ImCross size={25} />
     </button>
     <div className="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg mx-auto mt-8 bg-white shadow-lg rounded-lg">
-      <div className="h-[70vh] overflow-x-hidden overflow-y-scroll custom-scrollbar mt-2 w-full p-4">
+      <div className="h-[70vh] overflow-x-hidden overflow-y-scroll scrollbar-none mt-2 w-full p-4">
         {searchUser.length === 0 && !loading && (
           <p className="text-center text-slate-500">No User Found!</p>
         )}

@@ -68,8 +68,8 @@ export default function EditUser({ onClose, user }) {
 
   return (
     <>
-      <div className="fixed bg-gray-700 bg-opacity-40 flex justify-center items-center top-0 bottom-0 right-0 left-0 z-10 ">
-        <div className="bg-white p-4 py-8 m-1 rounded w-full max-w-sm">
+      <div className="fixed z-10 right-1/3 mt-20 ">
+        <div className="bg-gray-300 p-4 py-8 m-1 rounded w-full max-w-sm">
           <h2 className="font-semibold">Profile Details</h2>
           <p className="text-sm">Edit Details</p>
 

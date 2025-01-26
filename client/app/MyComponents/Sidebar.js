@@ -10,6 +10,7 @@ import Link from "next/link";
 import { Providers } from "../Provider";
 import moment from "moment";
 import { CiSearch } from "react-icons/ci";
+import { SeparatorHorizontal } from "lucide-react";
 
 export default function SideBar() {
   const [allUser, setAllUser] = useState([]);
@@ -60,20 +61,21 @@ export default function SideBar() {
                   {moment().format("dddd")},{moment().format(" Do MMMM, YYYY")}
                 </p>
               </div>
+
             </div>
 
             <div className="bg-white h-[calc(100vh-4rem)] py-4 px-2 overflow-y-auto scrollbar-none">
               {/* Search Bar */}
-              <div className="flex justify-center items-center mt-4 mx-2 sm:mx-4 h-10 sm:h-12 bg-gray-100 rounded-3xl">
-                <div className="h-full w-10 flex justify-center items-center">
+              <div className="flex justify-center items-center mt-4 mx-1 sm:mx-4 h-5 sm:h-12 bg-gray-100 rounded-2xl">
+                <div className="ml-3 w-8 flex justify-center items-center">
                   <CiSearch size={20} className="sm:text-lg" />
                 </div>
                 <input
                   type="text"
                   placeholder="Search now..."
-                  className="flex-1 outline-none p-1 bg-gray-100 rounded-3xl px-4 text-sm sm:text-base"
+                  className="flex-1 outline-none bg-gray-100 rounded-3xl px-2 text-sm sm:text-base"
                 />
-                <p className="mr-3 text-xs sm:text-sm text-gray-600">/F</p>
+                <p className="mr-5 text-xs sm:text-sm text-gray-600">/F</p>
               </div>
 
               {/* No Users Message */}
@@ -105,7 +107,7 @@ export default function SideBar() {
                   <Link
                     href={"/" + conv?.userDetails?._id}
                     key={conv?._id}
-                    className="flex items-center mt-3 sm:mt-[6px] gap-2 sm:gap-3 py-3 px-2 rounded hover:bg-slate-100 hover:border-primary cursor-pointer"
+                    className="flex items-center mt-3 sm:mt-[6px] gap-2 sm:gap-3 py-3 px-2 rounded hover:bg-slate-100 border-b-2 border-b-gray-200 cursor-pointer"
                   >
                     <Avatar
                       imageUrl={conv?.userDetails?.profile_pic}
