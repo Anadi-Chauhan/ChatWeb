@@ -304,7 +304,7 @@ export default function MessagePage() {
 
   useEffect(() => {
     fetchUserDetails();
-  });
+  },[]);
 
   useEffect(() => {
     const socket = getSocket(); // Get the singleton socket instance
