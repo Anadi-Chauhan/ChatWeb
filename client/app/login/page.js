@@ -54,26 +54,11 @@ export default function LoginPage() {
 
   return (
     <>
-      <div className="flex flex-col min-h-screen bg-black">
-        {/* Background */}
-        <div className="absolute w-full h-full bg-no-repeat bg-cover bg-center opacity-25 bg-[url('/11.webp')]"></div>
-
-        {/* Navbar */}
-        <div className="absolute top-4 right-4 sm:right-6">
-          <Navbar />
-        </div>
-
-        {/* Main Content */}
+      <div className="flex flex-col min-h-screen">
         <div className="grid flex-grow items-center justify-center px-4 sm:px-6 lg:px-8">
-          <div className="relative shadow-[rgba(132,197,135,0.1)] shadow-2xl bg-[rgba(66,89,67,1)] text-white rounded-lg p-6 sm:p-8 lg:p-10 w-full max-w-sm md:max-w-md">
-            {/* Welcome Message */}
+          <div className="relative text-white p-6 sm:p-8 lg:p-10 w-full max-w-sm md:max-w-md">
             <div className="mb-6">
-              <h1 className="text-lg font-bold">Welcome To Infinity Chat...</h1>
-            </div>
-
-            {/* Login Message */}
-            <div className="mb-6">
-              <p className="text-sm uppercase tracking-wide mb-2">
+              <p className="text-xl font-light font-roboto uppercase tracking-wide mb-2">
                 Welcome Back
               </p>
               <h2 className="text-2xl font-bold">Log In to your account.</h2>
@@ -87,8 +72,6 @@ export default function LoginPage() {
                 </Link>
               </p>
             </div>
-
-            {/* Login Form */}
             <form className="space-y-4" onSubmit={handleSubmit}>
               <div>
                 <label htmlFor="email">Email</label>
@@ -121,34 +104,14 @@ export default function LoginPage() {
                 </div>
               </div>
               <div className="flex justify-center">
-                <button className="w-full sm:w-auto mt-3 px-4 py-2 text-sm bg-green-500 rounded-lg hover:bg-green-600 focus:ring focus:ring-green-600">
+                <button className="w-full sm:w-auto mt-3 lg:min-w-28 px-4 py-2 text-sm bg-green-500 rounded-lg hover:bg-green-600 focus:ring focus:ring-green-600">
                   Login
                 </button>
               </div>
             </form>
-
-            {/* Footer Attribution */}
             <div className="absolute bottom-4 right-4 text-xs text-gray-200">
               ...AnadiChauhan
             </div>
-          </div>
-        </div>
-
-        {/* Footer */}
-        <div className="h-12 w-full bg-[rgba(6,23,6,1)] text-white">
-          <div className="flex flex-wrap justify-around items-center h-full px-4 text-xs">
-            <p>
-              2024 ©{" "}
-              <Link href="/" className="text-blue-500 hover:text-blue-300">
-                Infinity-Chat.org - Free Chat Rooms
-              </Link>
-            </p>
-            <p className="cursor-pointer hover:text-blue-500">
-              Terms of Service
-            </p>
-            <p className="cursor-pointer hover:text-blue-500">Privacy Policy</p>
-            <p className="cursor-pointer hover:text-blue-500">Contact us</p>
-            <p className="cursor-pointer hover:text-blue-500">Language</p>
           </div>
         </div>
       </div>

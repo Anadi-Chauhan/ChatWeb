@@ -6,7 +6,7 @@ export default function NoChat() {
     <>
           <div className="w-full h-screen bg-black overflow-hidden relative">
             <div className="absolute inset-0 bg-[url('/HomeMainBg.jpg')] bg-cover bg-center bg-no-repeat opacity-30"></div>
-            <div className="relative z-10 flex flex-col">
+            <div className="relative flex flex-col">
               <div className="relative flex flex-col justify-center items-center mt-20 px-6 sm:mt-28 lg:mt-32">
                 <div className="flex justify-center items-center mb-6">
                   <Image

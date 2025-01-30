@@ -94,7 +94,7 @@ export default function GuestForm() {
     <>
       <Providers>
         <div className="flex flex-col min-h-screen bg-black">
-          <div className="absolute w-full h-full bg-no-repeat bg-cover bg-center opacity-25 bg-[url('/11.webp')]"></div>
+          <div className="absolute w-full h-full bg-no-repeat bg-cover bg-center opacity-20 bg-[url('/11.webp')]"></div>
           <div className="absolute top-4 right-4 sm:right-6">
             <Navbar />
           </div>

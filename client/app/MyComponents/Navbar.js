@@ -12,7 +12,7 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="h-10 text-sm font-roboto font-semibold p-2">
+    <nav className="h-10 text-[0.9rem] font-roboto font-semibold p-2">
       <div className="flex items-center justify-between px-4">
         {/* Mobile Menu Button */}
         <button
@@ -25,21 +25,24 @@ export default function Navbar() {
 
         {/* Desktop Navigation */}
         <ul
-          className={`hidden sm:flex gap-10 justify-end mr-10 text-gray-200`}
+          className={`hidden sm:flex gap-2 justify-end mr-3 text-gray-200`}
         >
-          <li className="hover:text-white hover:underline">
+          <li className="px-6 py-3 text-white rounded-lg hover:bg-[#636957] transition duration-300">
+            <GNavLink href="/">Home</GNavLink>
+          </li>          
+          <li className="px-6 py-3 text-white rounded-lg hover:bg-[#636957] transition duration-300">
             <GNavLink href="/register">Register</GNavLink>
           </li>
-          <li className="hover:text-white hover:underline">
+          <li className="px-6 py-3 text-white rounded-lg hover:bg-[#636957] transition duration-300">
             <GNavLink href="/login">LogIn</GNavLink>
           </li>
-          <li className="hover:text-white hover:underline">
-            <GNavLink href="/room">Guest Room</GNavLink>
+          <li className="px-6 py-3 text-white rounded-lg hover:bg-[#636957] transition duration-300">
+            <GNavLink href="/room">Global Room</GNavLink>
           </li>
-          <li className="hover:text-white hover:underline">
+          <li className="px-6 py-3 text-white rounded-lg hover:bg-[#636957] transition duration-300">
             <GNavLink href="/support">Support</GNavLink>
           </li>
-          <li className="hover:text-white hover:underline">
+          <li className="px-6 py-3 text-white rounded-lg hover:bg-[#636957] transition duration-300">
             <GNavLink href="/terms">Terms & Conditions</GNavLink>
           </li>
         </ul>
@@ -47,19 +50,19 @@ export default function Navbar() {
         {/* Mobile Navigation */}
         {isMenuOpen && (
           <ul className="absolute z-20 top-12 right-4 bg-black bg-opacity-90 p-4 rounded-lg shadow-lg flex flex-col gap-4 text-gray-200 sm:hidden">
-            <li className="hover:text-white hover:underline">
+            <li className="px-6 py-3 text-white rounded-lg hover:bg-[#636957] transition duration-300">
               <GNavLink href="/register">Register</GNavLink>
             </li>
-            <li className="hover:text-white hover:underline">
+            <li className="px-6 py-3 text-white rounded-lg hover:bg-[#636957] transition duration-300">
               <GNavLink href="/login">LogIn</GNavLink>
             </li>
-            <li className="hover:text-white hover:underline">
+            <li className="px-6 py-3 text-white rounded-lg hover:bg-[#636957] transition duration-300">
               <GNavLink href="/room">Guest Room</GNavLink>
             </li>
-            <li className="hover:text-white hover:underline">
+            <li className="px-6 py-3 text-white rounded-lg hover:bg-[#636957] transition duration-300">
               <GNavLink href="/support">Support</GNavLink>
             </li>
-            <li className="hover:text-white hover:underline">
+            <li className="px-6 py-3 text-white rounded-lg hover:bg-[#636957] transition duration-300">
               <GNavLink href="/terms">Terms & Conditions</GNavLink>
             </li>
           </ul>

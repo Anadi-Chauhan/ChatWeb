@@ -74,6 +74,7 @@ export default function MessagePage() {
   const [callAccepted, setCallAccepted] = useState(false);
   const [stream, setStream] = useState(false);
   const [show, setShow] = useState(false);
+  const [showMessage, setShowMessage] = useState(false);
   const callData = {
     socketId: "",
     signal: "",
@@ -346,6 +347,9 @@ export default function MessagePage() {
 
           setMessaging(false)
           setAllMessage(data);
+          if (latestMessageSender === params.userId) {
+            setShowMessage(true)
+          }
         }
       });
     }
@@ -433,12 +437,14 @@ export default function MessagePage() {
           <section className="lg:h-[calc(88vh)] sm:h-[calc(100vh-128px)] p-2 sm:p-3 overflow-hidden relative bg-white ">
             <div className="h-[84.5vh] overflow-hidden bg-gray-100 rounded-lg  p-4">
               <div className="h-[72.5vh] flex flex-col overflow-scroll scrollbar-none">
+                
                 {allMessage.map((msg, index) => {
                   const isSameUserAsPrevious =
                     index > 0 &&
                     allMessage[index - 1]?.msgByUserId === msg.msgByUserId;
                     const isLatestMessage = index === allMessage.length - 1;
                   return (
+                    
                     <div
                       key={msg._id}
                       ref={isLatestMessage ? currentMessage : null}

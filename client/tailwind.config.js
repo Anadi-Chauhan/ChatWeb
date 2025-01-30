@@ -22,7 +22,7 @@ module.exports = {
     				'sans-serif'
     			]
     		},
-    	}
+			},
     },
 	plugins: [
 	  require('tailwind-scrollbar'),

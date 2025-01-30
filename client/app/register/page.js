@@ -8,10 +8,10 @@ import axios from "axios";
 import { toast } from "sonner";
 import { FiUpload } from "react-icons/fi";
 import Link from "next/link";
-import Navbar from "../MyComponents/Navbar";
 import { useRouter } from "next/navigation";
 import LoadingStyle from "../MyComponents/Loader";
 import LoadingNewStyle from "../MyComponents/newLoader";
+import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 
 export default function RegisterPage() {
   const [data, setData] = useState({
@@ -85,28 +85,19 @@ export default function RegisterPage() {
     }
     router.push("/verify");
   };
-
   return (
     <>
-      <div className="flex flex-col min-h-screen bg-black">
-        <div className="absolute w-full h-full bg-no-repeat bg-cover bg-center opacity-25 bg-[url('/11.webp')]"></div>
-        <div className="absolute top-4 right-4 sm:right-6">
-          <Navbar />
-        </div>
-        <div className="grid flex-grow items-center  justify-center">
-          <div className="relative shadow-[rgba(132,197,135,0.1)]  shadow-2xl bg-[rgba(66,89,67,1)] text-white rounded-l p-6 sm:p-8 lg:p-10 max-w-md w-full">
-            <div className="mb-6">
-              <h1 className="text-lg font-bold">Welcome To Infinity Chat...</h1>
-            </div>
-            <div className="mb-6">
-              <p className="text-sm uppercase tracking-wide mb-2">
+      <div className="flex mr-16 items-center gap-10 min-h-screen  justify-center">
+        <div className="text-white p-10 sm:p-8 lg:p-10 max-w-md w-full">
+          <div className="relative z-10">
+            <div>
+              <p className="text-2xl font-roboto font-thin uppercase tracking-wide mb-2">
                 Join for free
               </p>
               <h2 className="text-2xl font-bold">Create new account.</h2>
               <p className="text-sm mt-2 flex gap-1">
                 Already a Member?
                 <Link
-                  // onClick={() => setShowEmail(true)}
                   href="/login"
                   className="text-red-400 hover:underline flex items-center"
                 >
@@ -116,7 +107,7 @@ export default function RegisterPage() {
             </div>
             <form className="space-y-4" onSubmit={handleSubmit}>
               <div>
-                <label htmlFor="name">Name</label>
+                <label htmlFor="name">Name *</label>
                 <div className="flex gap-4 mt-2 flex-col sm:flex-row">
                   <input
                     type="text"
@@ -126,7 +117,7 @@ export default function RegisterPage() {
                     onChange={onHandleChange}
                     placeholder="First name"
                     required
-                    className="placeholder-slate-500 w-full sm:w-1/2 text-black bg-[#fffbfba8] text-sm border border-gray-700 rounded-lg px-4 py-2 focus:outline-none focus:ring focus:ring-green-600"
+                    className="placeholder-slate-700 w-full sm:w-1/2 text-black bg-[#fffbfba8] text-sm border border-gray-700 rounded-lg px-4 py-2 focus:outline-none focus:ring focus:ring-green-600"
                   />
                   <input
                     type="text"
@@ -135,27 +126,28 @@ export default function RegisterPage() {
                     value={data.value}
                     onChange={onHandleChange}
                     placeholder="Last name"
-                    className="w-full sm:w-1/2 placeholder-slate-500 text-black bg-[#fffbfba8] text-sm border border-gray-700 rounded-lg px-4 py-2 focus:outline-none focus:ring focus:ring-green-600"
+                    className="w-full sm:w-1/2 placeholder-slate-700 text-black bg-[#fffbfba8] text-sm border border-gray-700 rounded-lg px-4 py-2 focus:outline-none focus:ring focus:ring-green-600"
                   />
                 </div>
               </div>
+
               <div>
-                <label htmlFor="email">Email</label>
+                <label htmlFor="email">Gmail *</label>
                 <div className="mt-2">
                   <input
                     type="email"
                     id="email"
                     name="email"
-                    placeholder="Email"
+                    placeholder="Gmail"
                     value={data.email}
                     onChange={onHandleChange}
                     required
-                    className="w-full placeholder-slate-500 text-black bg-[#fffbfba8] text-sm border border-gray-700 rounded-lg px-4 py-2 focus:outline-none focus:ring focus:ring-green-600"
+                    className="w-full placeholder-slate-700 text-black bg-[#fffbfba8] text-sm border border-gray-700 rounded-lg px-4 py-2 focus:outline-none focus:ring focus:ring-green-600"
                   />
                 </div>
               </div>
               <div>
-                <label htmlFor="password">Password</label>
+                <label htmlFor="password">Password *</label>
                 <div className="mt-2">
                   <input
                     type="password"
@@ -164,8 +156,10 @@ export default function RegisterPage() {
                     name="password"
                     value={data.password}
                     onChange={onHandleChange}
+                    minLength={6}
+                    maxLength={10}
                     required
-                    className="w-full placeholder-slate-500 text-black bg-[#fffbfba8] text-sm border border-gray-700 rounded-lg px-4 py-2 focus:outline-none focus:ring focus:ring-green-600"
+                    className="w-full placeholder-slate-700 text-black bg-[#fffbfba8] text-sm border border-gray-700 rounded-lg px-4 py-2 focus:outline-none focus:ring focus:ring-green-600"
                   />
                 </div>
               </div>
@@ -173,8 +167,8 @@ export default function RegisterPage() {
                 <label htmlFor="profile_pic">
                   Profile Pic
                   {!uploading ? (
-                    <div className="flex items-center mt-2 placeholder-slate-500 text-black bg-[#fffbfba8] text-sm border border-gray-700 rounded-lg px-4 py-2">
-                      <p className="text-sm truncate text-slate-500">
+                    <div className="flex items-center mt-2 bg-[#fffbfba8] text-sm border border-gray-700 rounded-lg px-4 py-2">
+                      <p className="text-sm truncate text-slate-700">
                         {uploadPhoto?.name
                           ? uploadPhoto?.name
                           : "Upload profile pic"}
@@ -211,27 +205,18 @@ export default function RegisterPage() {
                 </button>
               </div>
             </form>
-            <div className="absolute bottom-4 right-4">
-              <p className="text-xs text-gray-200">...AnadiChauhan</p>
-            </div>
+          </div>
+          <div className="absolute bottom-4 right-4">
+            <p className="text-xs text-gray-200">...AnadiChauhan</p>
           </div>
         </div>
-        {/* Footer */}
-        <div className="h-12 w-full bg-[rgba(6,23,6,1)] text-white">
-          <div className="flex flex-wrap justify-around items-center h-full px-4 text-xs">
-            <p>
-              2024 ©{" "}
-              <Link href="/" className="text-blue-500 hover:text-blue-300">
-                Infinity-Chat.org - Free Chat Rooms
-              </Link>
-            </p>
-            <p className="cursor-pointer hover:text-blue-500">
-              Terms of Service
-            </p>
-            <p className="cursor-pointer hover:text-blue-500">Privacy Policy</p>
-            <p className="cursor-pointer hover:text-blue-500">Contact us</p>
-            <p className="cursor-pointer hover:text-blue-500">Language</p>
-          </div>
+        <div className="relative flex justify-start items-center">
+          <DotLottieReact
+            src="https://lottie.host/a6b75648-bdd3-41b8-aa01-eb3efa523286/M6e7fX9kg1.lottie"
+            loop
+            autoplay
+            style={{ width: "500px", height: "500px" }}
+          />
         </div>
       </div>
     </>
