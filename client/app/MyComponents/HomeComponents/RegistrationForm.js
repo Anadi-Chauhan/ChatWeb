@@ -3,17 +3,16 @@
 import React, { useState } from "react";
 import { IoClose } from "react-icons/io5";
 import { BiRightArrowAlt } from "react-icons/bi";
-import uploadFile from "../Components/helpers/uploadFile";
 import axios from "axios";
 import { toast } from "sonner";
 import { FiUpload } from "react-icons/fi";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
-import LoadingStyle from "../MyComponents/Loader";
-import LoadingNewStyle from "../MyComponents/newLoader";
-import { DotLottieReact } from "@lottiefiles/dotlottie-react";
+import uploadFile from "@/app/Components/helpers/uploadFile";
+import LoadingNewStyle from "../newLoader";
+import LoadingStyle from "../Loader";
+import Link from "next/link";
 
-export default function RegisterPage() {
+export default function RegisterationForm({setShowRegister}) {
   const [data, setData] = useState({
     name: "",
     email: "",
@@ -97,12 +96,12 @@ export default function RegisterPage() {
               <h2 className="text-2xl font-bold">Create new account.</h2>
               <p className="text-sm mt-2 flex gap-1">
                 Already a Member?
-                <Link
-                  href="/login"
+                <button
+                  onClick={()=>setShowRegister(false)}
                   className="text-red-400 hover:underline flex items-center"
                 >
                   Log in <BiRightArrowAlt size={20} />
-                </Link>
+                </button>
               </p>
             </div>
             <form className="space-y-4" onSubmit={handleSubmit}>
@@ -204,19 +203,11 @@ export default function RegisterPage() {
                   {registering ? <LoadingStyle /> : <p>Create account</p>}
                 </button>
               </div>
+              <div>
+                <p className="text-xs" >By signing up, you agree to our <Link href="/" className="text-blue-500 hover:text-blue-300" >terms</Link>, <Link href="/" className="text-blue-500 hover:text-blue-300" >acceptable use</Link>, and <Link href="/" className="text-blue-500 hover:text-blue-300" >privacy policy</Link>.</p>
+              </div>
             </form>
           </div>
-          <div className="absolute bottom-4 right-4">
-            <p className="text-xs text-gray-200">...AnadiChauhan</p>
-          </div>
-        </div>
-        <div className="relative flex justify-start items-center">
-          <DotLottieReact
-            src="https://lottie.host/a6b75648-bdd3-41b8-aa01-eb3efa523286/M6e7fX9kg1.lottie"
-            loop
-            autoplay
-            style={{ width: "500px", height: "500px" }}
-          />
         </div>
       </div>
     </>

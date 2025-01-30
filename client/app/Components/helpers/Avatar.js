@@ -30,17 +30,19 @@ export default function Avatar({ userId, name, imageUrl, width, height }) {
   const randomNumber = Math.floor(Math.random() * 5)
 
   const isOnline = onlineUser.includes(userId)
+  const finalImageUrl = imageUrl?.trim() ? imageUrl : "/DefaultImage.ico";
 
   return (
     <div className={`text-slate-800 rounded-full shadow text-xl font-bold relative ${bgColor[randomNumber]}`} style={{ width: width + "px", height: height + "px", fontSize: width/2.5 + "px" }}>
       <div   className="overflow-hidden rounded-full w-full h-full flex justify-center items-center"
         style={{ width: width + "px", height: height + "px" }} >
-      {imageUrl ? (
+      {imageUrl?.trim() ? (
         <Image
-          src={imageUrl}
+          src={finalImageUrl}
           width={width}
           height={height}
           alt={name}
+          unoptimized
           className="overflow-hidden rounded-full"
         />
       ) : name ? (

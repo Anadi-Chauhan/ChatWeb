@@ -27,22 +27,22 @@ export default function Navbar() {
         <ul
           className={`hidden sm:flex gap-2 justify-end mr-3 text-gray-200`}
         >
-          <li className="px-6 py-3 text-white rounded-lg hover:bg-[#636957] transition duration-300">
+          <li className="px-6 py-3 text-white rounded-lg hover:bg-[#636957] hover:bg-opacity-35 transition duration-300">
             <GNavLink href="/">Home</GNavLink>
           </li>          
-          <li className="px-6 py-3 text-white rounded-lg hover:bg-[#636957] transition duration-300">
+          {/* <li className="px-6 py-3 text-white rounded-lg hover:bg-[#636957] transition duration-300">
             <GNavLink href="/register">Register</GNavLink>
           </li>
           <li className="px-6 py-3 text-white rounded-lg hover:bg-[#636957] transition duration-300">
             <GNavLink href="/login">LogIn</GNavLink>
-          </li>
-          <li className="px-6 py-3 text-white rounded-lg hover:bg-[#636957] transition duration-300">
+          </li> */}
+          <li className="px-6 py-3 text-white rounded-lg hover:bg-[#636957] hover:bg-opacity-35 transition duration-300">
             <GNavLink href="/room">Global Room</GNavLink>
           </li>
-          <li className="px-6 py-3 text-white rounded-lg hover:bg-[#636957] transition duration-300">
+          <li className="px-6 py-3 text-white rounded-lg hover:bg-[#636957] hover:bg-opacity-35  transition duration-300">
             <GNavLink href="/support">Support</GNavLink>
           </li>
-          <li className="px-6 py-3 text-white rounded-lg hover:bg-[#636957] transition duration-300">
+          <li className="px-6 py-3 text-white rounded-lg hover:bg-[#636957] hover:bg-opacity-35 transition duration-300">
             <GNavLink href="/terms">Terms & Conditions</GNavLink>
           </li>
         </ul>

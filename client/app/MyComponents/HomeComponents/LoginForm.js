@@ -4,13 +4,12 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { toast } from "sonner";
-import { setToken } from "../redux/userSlice";
-import Navbar from "../MyComponents/Navbar";
-import Link from "next/link";
 import axios from "axios";
 import { BiRightArrowAlt } from "react-icons/bi";
+import { setToken } from "@/app/redux/userSlice";
+import Link from "next/link";
 
-export default function LoginPage() {
+export default function LoginForm({setShowRegister}) {
   const [data, setData] = useState({
     email: "",
     password: "",
@@ -18,6 +17,7 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const router = useRouter();
   const dispatch = useDispatch();
+  
 
   const onHandleChange = (e) => {
     const { name, value } = e.target;
@@ -54,8 +54,8 @@ export default function LoginPage() {
 
   return (
     <>
-      <div className="flex flex-col min-h-screen">
-        <div className="grid flex-grow items-center justify-center px-4 sm:px-6 lg:px-8">
+      <div className="flex mr-16 items-center gap-10 min-h-screen  justify-center">
+        <div className="text-white max-w-md w-full px-4 sm:px-6 lg:px-8">
           <div className="relative text-white p-6 sm:p-8 lg:p-10 w-full max-w-sm md:max-w-md">
             <div className="mb-6">
               <p className="text-xl font-light font-roboto uppercase tracking-wide mb-2">
@@ -64,17 +64,17 @@ export default function LoginPage() {
               <h2 className="text-2xl font-bold">Log In to your account.</h2>
               <p className="text-sm mt-2">
                 Don&apos;t have an account?
-                <Link
-                  href="/register"
+                <button
+                  onClick={()=>setShowRegister(true)}
                   className="text-red-400 hover:underline flex items-center"
                 >
                   Create your account here <BiRightArrowAlt size={20} />
-                </Link>
+                </button>
               </p>
             </div>
             <form className="space-y-4" onSubmit={handleSubmit}>
               <div>
-                <label htmlFor="email">Email</label>
+                <label htmlFor="email">Email *</label>
                 <div className="mt-2">
                   <input
                     type="email"
@@ -84,12 +84,12 @@ export default function LoginPage() {
                     value={data.email}
                     onChange={onHandleChange}
                     required
-                    className="w-full placeholder-slate-500 text-black bg-[#fffbfba8] text-sm border border-gray-700 rounded-lg px-4 py-2 focus:outline-none focus:ring focus:ring-green-600"
+                    className="w-full placeholder-slate-700 text-black bg-[#fffbfba8] text-sm border border-gray-700 rounded-lg px-4 py-2 focus:outline-none focus:ring focus:ring-green-600"
                   />
                 </div>
               </div>
               <div>
-                <label htmlFor="password">Password</label>
+                <label htmlFor="password">Password *</label>
                 <div className="mt-2">
                   <input
                     type="password"
@@ -99,22 +99,22 @@ export default function LoginPage() {
                     value={data.password}
                     onChange={onHandleChange}
                     required
-                    className="w-full placeholder-slate-500 text-black bg-[#fffbfba8] text-sm border border-gray-700 rounded-lg px-4 py-2 focus:outline-none focus:ring focus:ring-green-600"
+                    className="w-full placeholder-slate-700 text-black bg-[#fffbfba8] text-sm border border-gray-700 rounded-lg px-4 py-2 focus:outline-none focus:ring focus:ring-green-600"
                   />
                 </div>
               </div>
               <div className="flex justify-center">
-                <button className="w-full sm:w-auto mt-3 lg:min-w-28 px-4 py-2 text-sm bg-green-500 rounded-lg hover:bg-green-600 focus:ring focus:ring-green-600">
+                <button className="min-w-full lg:min-w-full sm:w-auto mt-3 px-4 py-2 text-sm bg-green-500 rounded-lg hover:bg-green-600 focus:ring focus:ring-green-600">
                   Login
                 </button>
               </div>
+              <div>
+              <p className="text-xs" >By signing up, you agree to our <Link href="/" className="text-blue-500 hover:text-blue-300" > Terms of Service</Link> & <Link href="/" className="text-blue-500 hover:text-blue-300" >Privacy Policy</Link></p>
+              </div>
             </form>
-            <div className="absolute bottom-4 right-4 text-xs text-gray-200">
-              ...AnadiChauhan
             </div>
           </div>
         </div>
-      </div>
     </>
   );
 }
