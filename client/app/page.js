@@ -69,33 +69,31 @@ export default function Home() {
           viewport={{ once: false, amount: 0.3 }}
           className="relative flex flex-col justify-center items-center mt-20 px-6 sm:mt-28 lg:mt-32"
         >
-          <div className="flex justify-center mr-20 items-center mb-12 hover:scale-125 transition duration-700">
+          <div className="flex justify-center mr-0 sm:mr-20 items-center mb-12 hover:scale-125 transition duration-700">
             <Image
               src="logo.svg"
               alt="logo"
-              className="w-24 sm:w-32 lg:w-40"
+              className="w-20 sm:w-32 lg:w-40"
               height={50}
               width={50}
             />
           </div>
-          <p className="text-center text-base mt-32 sm:text-lg lg:text-4xl text-slate-400 perspective-[1000px] flex gap-2 items-center">
+          <p className="text-center text-base sm:text-lg lg:text-4xl mt-10 lg:mt-32 sm:mt-16 text-slate-400 flex gap-2 items-center">
             Find People to send messages
             <FaUserPlus
               className="text-white hover:scale-110 transition ease-in-out duration-400"
               size={28}
             />
           </p>
-          <p className="text-white ml-10 flex flex-wrap gap-[6px] font-roboto text-xs sm:text-base lg:text-lg text-center mt-4 max-w-6xl">
-            {words.map((word, index) => {
-              return (
-                <span
-                  key={index}
-                  className="hover:scale-[1.15] transition-transform duration-300"
-                >
-                  {word}
-                </span>
-              );
-            })}
+          <p className="text-white flex flex-wrap gap-[6px] font-roboto text-xs sm:text-base lg:text-lg text-center mt-6 max-w-6xl">
+            {words.map((word, index) => (
+              <span
+                key={index}
+                className="hover:scale-[1.15] transition-transform duration-300"
+              >
+                {word}
+              </span>
+            ))}
           </p>
         </motion.div>
         <motion.div
@@ -135,7 +133,7 @@ export default function Home() {
               </motion.div>
             )}
           </AnimatePresence>
-          <div className="relative flex lg:flex sm:hidden justify-start items-center">
+          <div className="relative hidden lg:flex">
             <DotLottieReact
               src="https://lottie.host/a6b75648-bdd3-41b8-aa01-eb3efa523286/M6e7fX9kg1.lottie"
               loop
