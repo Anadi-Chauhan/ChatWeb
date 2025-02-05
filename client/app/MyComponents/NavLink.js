@@ -10,7 +10,7 @@ const NavLink = ({ href, children, className }) => {
   return (
     <Link
       href={href}
-      className={`${className} ${isActive ? 'bg-slate-700' : '' }`}
+      className={`${className} ${isActive ? 'bg-slate-100' : '' }`}
     >
       {children}
     </Link>

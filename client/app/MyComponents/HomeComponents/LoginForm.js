@@ -14,7 +14,6 @@ export default function LoginForm({setShowRegister}) {
     email: "",
     password: "",
   });
-  const [email, setEmail] = useState("");
   const router = useRouter();
   const dispatch = useDispatch();
   
@@ -29,12 +28,11 @@ export default function LoginForm({setShowRegister}) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setEmail(data.email);
     e.stopPropagation();
     try {
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/login`,
-        { email },
+        { email : data.email },
         { withCredentials: true }
       );
 
@@ -65,7 +63,7 @@ export default function LoginForm({setShowRegister}) {
               <p className="text-sm mt-2">
                 Don&apos;t have an account?
                 <button
-                  onClick={()=>setShowRegister(true)}
+                  onClick={()=>setShowRegister(false)}
                   className="text-red-400 hover:underline flex items-center"
                 >
                   Create your account here <BiRightArrowAlt size={20} />

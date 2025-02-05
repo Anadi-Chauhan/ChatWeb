@@ -4,13 +4,13 @@ import Navbar from "./MyComponents/Navbar";
 import { FaUserPlus } from "react-icons/fa";
 import Image from "next/image";
 import Link from "next/link";
-import FallingLeaves from "./leaf/page";
 import { AnimatePresence, motion } from "framer-motion";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import { useEffect, useState } from "react";
 import { BiDownArrow, BiUpArrow } from "react-icons/bi";
 import RegisterationForm from "./MyComponents/HomeComponents/RegistrationForm";
 import LoginForm from "./MyComponents/HomeComponents/LoginForm";
+import FallingLeaves from "./MyComponents/HomeComponents/FallingLeaves";
 
 export default function Home() {
   const text = `Welcome to our free chat website. Our chat community gives you the opportunity to make new friends, meet cool people, and share great memories and moments with other people from all over the world. We have a friendly environment that is fully moderated to ensure your safety. You can register your username or log in as a guest user in global chat. Please make sure you follow all the rules of the chat rooms or you will not be able to participate.`;
@@ -113,16 +113,6 @@ export default function Home() {
           <AnimatePresence mode="wait">
             {showRegister ? (
               <motion.div
-                key="register"
-                initial={{ opacity: 0, x: -50 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 50 }}
-                transition={{ duration: 0.5, ease: "easeInOut" }}
-              >
-                <RegisterationForm setShowRegister={setShowRegister} />
-              </motion.div>
-            ) : (
-              <motion.div
                 key="login"
                 initial={{ opacity: 0, x: 50 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -130,6 +120,16 @@ export default function Home() {
                 transition={{ duration: 0.5, ease: "easeInOut" }}
               >
                 <LoginForm setShowRegister={setShowRegister} />
+              </motion.div>
+            ) : (
+              <motion.div
+                key="register"
+                initial={{ opacity: 0, x: -50 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 50 }}
+                transition={{ duration: 0.5, ease: "easeInOut" }}
+              >
+                <RegisterationForm setShowRegister={setShowRegister} />
               </motion.div>
             )}
           </AnimatePresence>

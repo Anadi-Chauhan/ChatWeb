@@ -7,6 +7,7 @@ import axios from "axios";
 import { useDispatch } from "react-redux";
 import { setUser } from "../redux/userSlice";
 import { toast } from "sonner";
+import { MdOutlineDriveFolderUpload } from "react-icons/md";
 
 export default function EditUser({ onClose, user }) {
   const [data, setData] = useState({
@@ -68,26 +69,24 @@ export default function EditUser({ onClose, user }) {
 
   return (
     <>
-      <div className="fixed z-10 right-1/3 mt-20 ">
-        <div className="bg-gray-300 p-4 py-8 m-1 rounded w-full max-w-sm">
-          <h2 className="font-semibold">Profile Details</h2>
-          <p className="text-sm">Edit Details</p>
-
+      <div className="fixed z-10 right-1/3 top-1/3 ">
+        <div className="bg-white p-4 py-8 m-1 rounded w-full max-w-md">
+          <h2 className="font-light font-roboto text-xl">Edit Profile Details</h2>
           <form className="mt-4" onSubmit={handleSubmit}>
             <div>
-              <label htmlFor="name">Name</label>
+              <label htmlFor="name" className="font-medium text-[17px]">Name</label>
               <input
                 type="text"
                 name="name"
                 id="name"
                 value={data.name}
                 onChange={handleChange}
-                className="py-1 w-full px-2 focus:outline-primary"
+                className="py-1 w-full px-2 mt-2 focus:outline-blue-300 rounded-md border-2 border-gray-500"
               />
             </div>
-            <div>
-              <div>Photo</div>
-              <div className="my-1 flex gap-5">
+            <div className="mt-5" >
+              <div className="font-medium text-[17px]" >Photo</div>
+              <div className="mt-2 flex gap-5">
                 <Avatar
                   width={40}
                   height={40}
@@ -96,10 +95,10 @@ export default function EditUser({ onClose, user }) {
                 />
                 <label htmlFor="profile_pic" className="mt-2">
                   <button
-                    className="font-semibold"
+                    className="font-semibold flex gap-2 hover:text-blue-300"
                     onClick={handleOpenUpload}
                   >
-                    Change Photo
+                    Change Photo <MdOutlineDriveFolderUpload size={25} />
                   </button>
                   <input
                     type="file"

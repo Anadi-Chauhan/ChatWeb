@@ -11,11 +11,9 @@ import Link from "next/link";
 import Image from "next/image";
 import moment from "moment";
 import { IoMdVideocam } from "react-icons/io";
-import { IoCall } from "react-icons/io5";
+import { IoCheckmarkDone } from "react-icons/io5";
 import { PiPhoneCallFill } from "react-icons/pi";
 import { MdCallEnd } from "react-icons/md";
-import { IoMdMicOff } from "react-icons/io";
-import { HiMiniSpeakerWave } from "react-icons/hi2";
 import Peer from "simple-peer";
 import Avatar from "@/app/Components/helpers/Avatar";
 import LoadingStyle from "../MyComponents/Loader";
@@ -29,14 +27,52 @@ import {
 import axios from "axios";
 
 import EmojiPickerComponet from "../MyComponents/MessagePageComponents/EmojiPicker";
-import BackgroundChanger from "../MyComponents/MessagePageComponents/BackgroundChange";
 import IVSender from "../MyComponents/MessagePageComponents/IVSender";
 import VoiceMessage from "../MyComponents/VoiceMessage";
-import { AudioLinesIcon } from "lucide-react";
 import NoChat from "../MyComponents/MessagePageComponents/NoChat";
 
-export default function MessagePage() {
-  
+function openDB() {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open("ChatDB", 1);
+
+    request.onupgradeneeded = (event) => {
+      let db = event.target.result;
+      if (!db.objectStoreNames.contains("messages")) {
+        let store = db.createObjectStore("messages", { keyPath: "userID" });
+        store.createIndex("userID", "userID", { unique: true });
+      }
+    };
+
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject("Error opening IndexedDB");
+  });
+}
+
+async function getMessages(userID) {
+  let db = await openDB();
+  let transaction = db.transaction("messages", "readonly");
+  let store = transaction.objectStore("messages");
+
+  return new Promise((resolve) => {
+    let request = store.get(userID);
+    request.onsuccess = () =>
+      resolve(request.result ? request.result.messages : []);
+    request.onerror = () => resolve([]);
+  });
+}
+async function saveMessages(userID, messages) {
+  let db = await openDB();
+  return new Promise((resolve, reject) => {
+    let transaction = db.transaction("messages", "readwrite");
+    let store = transaction.objectStore("messages");
+
+    let request = store.put({ userID, messages });
+
+    request.onsuccess = () => resolve(true);
+    request.onerror = (event) => reject(event.target.error);
+  });
+}
+export default function MessagePage({ background }) {
   const params = useParams();
   const socketConnection = useSelector(
     (state) => state?.user?.socketConnection
@@ -49,16 +85,6 @@ export default function MessagePage() {
     profile_pic: "",
     online: false,
   });
-  const reciever = useSelector((state) => state?.user);
-  const [dataReciever, setDataReciever] = useState({
-    _id: "",
-    name: "",
-    email: "",
-    profile_pic: "",
-    online: false,
-  });
-
-  const [background, setBackground] = useState("");
   const [message, setMessage] = useState({
     text: "",
     imageUrl: "",
@@ -72,9 +98,8 @@ export default function MessagePage() {
   const [calling, setCalling] = useState(false);
   const [called, setCalled] = useState(false);
   const [callAccepted, setCallAccepted] = useState(false);
-  const [stream, setStream] = useState(false);
+  const [stream, setStream] = useState();
   const [show, setShow] = useState(false);
-  const [showMessage, setShowMessage] = useState(false);
   const callData = {
     socketId: "",
     signal: "",
@@ -89,7 +114,7 @@ export default function MessagePage() {
   const router = useRouter();
   const audioRef = useRef(null);
   const [showComponenet, setShowComponent] = useState(false);
-  const [userArray, setUserArray] = useState([]);
+  const [isSeen, setIsSeen] = useState({});
 
   const fetchUserDetails = async () => {
     try {
@@ -150,14 +175,13 @@ export default function MessagePage() {
 
   const handleSendMessage = (e) => {
     // e.preventDefault();
-    setMessaging(true)
+    setMessaging(true);
     if (
       message.text ||
       message.imageUrl ||
       message.videoUrl ||
       message.audioUrl
     ) {
-
       if (socketConnection) {
         socketConnection.emit("new-message", {
           sender: user?._id,
@@ -195,13 +219,8 @@ export default function MessagePage() {
   };
 
   const enableMedia = () => {
-    console.log("myVideo", myVideo.current);
-    console.log("Setting stream to video:", stream);
     if (stream && myVideo) {
-      console.log("Setting stream to video:", stream);
-      myVideo.current.srcObject = stream; // Set the stream to the local video element
-      remoteVideo.current.srcObject = stream; // Set the stream to the local video element
-      remoteVideo.current.autoPlay = true; // Set the stream to the local video element
+      myVideo.current.srcObject = stream;
       myVideo.current.autoplay = true;
     } else {
       console.error("Stream is invalid or null");
@@ -210,10 +229,8 @@ export default function MessagePage() {
   };
 
   const handleCallUser = () => {
-    // setupMedia();
-    setCalling(true);
     enableMedia();
-    // socketConnection.emit("call-user", params.userId);
+    setCalling(true);
 
     const peer = new Peer({
       initiator: true,
@@ -238,8 +255,8 @@ export default function MessagePage() {
         });
       });
       peer.on("stream", (stream) => {
-        // myVideo.current.srcObject = stream;
         remoteVideo.current.srcObject = stream;
+        remoteVideo.current.autoPlay = true;
       });
       socketConnection.on("call-accepted", (signal) => {
         setCallAccepted(true);
@@ -257,17 +274,13 @@ export default function MessagePage() {
       trickle: false,
       stream: stream,
     });
-    console.log("Peer object created:", peer);
-
     peer.on("signal", (data) => {
-      console.log("cccccc", data);
       socketConnection.emit("answer-call", { signal: data, to: call.socketId });
     });
     peer.on("stream", (remoteStream) => {
-      console.log("Remote stream (receiver):", remoteStream);
       if (remoteVideo.current) {
         remoteVideo.current.srcObject = remoteStream;
-        // myVideo.current.srcObject = remoteStream;
+        remoteVideo.current.autoPlay = true;
       }
     });
     peer.signal(call.signal);
@@ -305,16 +318,15 @@ export default function MessagePage() {
 
   useEffect(() => {
     fetchUserDetails();
-  },[]);
+  }, []);
 
   useEffect(() => {
-    const socket = getSocket(); // Get the singleton socket instance
+    const socket = getSocket();
     console.log("kdjsidvbdsjbj");
 
     socket.on("onlineUser", (data) => {
       console.log("Online users:", data);
       dispatch(setOnlineUser(data));
-      setUserArray(data);
     });
 
     dispatch(setSocketConnection(socket));
@@ -334,29 +346,62 @@ export default function MessagePage() {
   }, [allMessage]);
 
   useEffect(() => {
+    const fetchMessages = async () => {
+      const cachedMessages = await getMessages(params.userId);
+      setAllMessage(cachedMessages || []);
+
+      const updatedSeenStatus = {};
+      cachedMessages.forEach((msg) => {
+        updatedSeenStatus[msg._id] = msg.seen;
+      });
+      setIsSeen(updatedSeenStatus);
+    };
+
+    fetchMessages();
+
     if (socketConnection) {
       socketConnection.emit("message-page", params.userId);
       socketConnection.on("message-user", (data) => {
         setDataUser(data);
       });
-      console.log("wvyvwbwsuxsv", socketConnection);
 
-      socketConnection.on("message", (data) => {
-        const latestMessageSender = data[data.length - 1]?.msgByUserId;
-        if (params.userId || user?._id === latestMessageSender) {
+      socketConnection.on("message", async (data) => {
+        setMessaging(false);
+        setAllMessage(data);
+        await saveMessages(params.userId, data);
+        const updatedSeenStatus = {};
+        data.forEach((msg) => {
+          updatedSeenStatus[msg._id] = msg.seen;
+        });
+        setIsSeen(updatedSeenStatus);
+      });
 
-          setMessaging(false)
-          setAllMessage(data);
-          if (latestMessageSender === params.userId) {
-            setShowMessage(true)
-          }
+      socketConnection.on("new-message", async (data) => {
+        const messageUser = data[data.length - 1];
+
+        if (
+          params.userId === messageUser.msgByUserId &&
+          user._id === messageUser.recieverUserId
+        ) {
+          setAllMessage((prev) => [...prev, messageUser]);
+          await saveMessages(params.userId, [messageUser]);
+          setIsSeen((prev) => ({
+            ...prev,
+            [messageUser._id]: messageUser.seen,
+          }));
         }
       });
     }
     const isValidHex = (str) => /^[a-fA-F0-9]{24}$/.test(str);
     if (isValidHex(params.userId)) {
+      socketConnection?.emit("seen", params.userId);
       setShowComponent(true);
     }
+    return () => {
+      socketConnection?.off("message-user");
+      socketConnection?.off("message");
+      socketConnection?.off("new-message");
+    };
   }, [socketConnection, params.userId, user]);
 
   useEffect(() => {
@@ -377,7 +422,7 @@ export default function MessagePage() {
     });
   }, [call]);
 
- useEffect(() => {
+  useEffect(() => {
     if (!callAccepted && show) {
       audioRef.current?.play();
     } else {
@@ -388,10 +433,7 @@ export default function MessagePage() {
   return (
     <>
       {showComponenet ? (
-        <div
-          style={{ backgroundImage: `url(${background})` }}
-          className="w-full bg-no-repeat bg-contain bg-center overflow-hidden"
-        >
+        <div className="w-full bg-no-repeat bg-contain bg-center overflow-hidden">
           <header className="sticky top-0 h-16 bg-white grid grid-cols-[1fr,auto,auto,auto] items-center px-2 sm:px-4 md:px-6">
             <div className="flex items-center gap-2 sm:gap-4">
               <Link
@@ -424,10 +466,7 @@ export default function MessagePage() {
             </div>
             <div className="flex gap-4">
               <button className="hidden sm:block">
-                <IoCall onClick={handleCallUser} size={20} />
-              </button>
-              <button className="hidden sm:block">
-                <IoMdVideocam size={20} />
+                <IoMdVideocam onClick={handleCallUser} size={20} />
               </button>
               <button className="cursor-pointer hover:text-primary">
                 <BiDotsVertical size={20} />
@@ -435,146 +474,141 @@ export default function MessagePage() {
             </div>
           </header>
           <section className="lg:h-[calc(88vh)] sm:h-[calc(100vh-128px)] p-2 sm:p-3 overflow-hidden relative bg-white ">
-            <div className="h-[84.5vh] overflow-hidden bg-gray-100 rounded-lg  p-4">
-              <div className="h-[72.5vh] flex flex-col overflow-scroll scrollbar-none">
-                
+            <div className="h-[84.5vh] overflow-hidden rounded-lg bg-black  p-4 relative">
+              <div
+                style={{ backgroundImage: `url(${background})` }}
+                className="bg-center bg-cover absolute inset-0 opacity-50 pointer-events-none"
+              ></div>
+              <div className="absolute">
+                <video height="300px" width="300px" ref={myVideo} autoPlay />
+              </div>
+              <div className="relative h-[72.5vh] flex flex-col overflow-scroll scrollbar-none ">
                 {allMessage.map((msg, index) => {
                   const isSameUserAsPrevious =
                     index > 0 &&
                     allMessage[index - 1]?.msgByUserId === msg.msgByUserId;
-                    const isLatestMessage = index === allMessage.length - 1;
+                  const isLatestMessage = index === allMessage.length - 1;
                   return (
-                    
                     <div
                       key={msg._id}
                       ref={isLatestMessage ? currentMessage : null}
-                      className={`p-1 py-2 rounded w-fit min-w-14 ${
+                      className={`p-1 py-2 z-10 rounded w-fit min-w-14 ${
                         user._id === msg.msgByUserId ? "ml-auto" : ""
                       }`}
                     >
+                      <div
+                        className={`relative w-fit max-w-md p-2 border bubble shadow-md ${
+                          user._id === msg.msgByUserId
+                            ? "bg-[#bebeff] mr-10 right"
+                            : "bg-[#acf9ff] ml-9 left"
+                        }`}
+                      >
+                        <span className="text-sm text-gray-800 font-semibold">
+                          {msg.sender_name}
+                        </span>
+                        <div className="mb-1 flex gap-3">
+                          {msg.text && (
+                            <p className="text-lg font-roboto">{msg.text}</p>
+                          )}
+                          {msg.imageUrl && (
+                            <Image
+                              src={msg?.imageUrl}
+                              width={300}
+                              height={300}
+                              alt="no Image"
+                              className="w-[300px] mt-4 h-[300px] object-scale-down"
+                            />
+                          )}
+                          {msg.videoUrl && (
+                            <video
+                              src={
+                                msg?.videoUrl ===
+                                `data:video/webm;base64,${msg.videoUrl}`
+                                  ? msg?.videoUrl ===
+                                    `data:video/webm;base64,${msg.videoUrl}`
+                                  : msg.videoUrl
+                              }
+                              controls
+                              muted
+                              alt="no Video"
+                              className="w-[300px] h-[300px] object-scale-down"
+                            />
+                          )}
+                          {msg.audioUrl && (
+                            <div className="w-9">
+                              <audio
+                                controls
+                                src={`data:audio/webm;base64,${msg?.audioUrl}`}
+                                type="audio/webm"
+                                style={{ width: "150px", height: "40px" }}
+                                className="mt-2"
+                              />
+                            </div>
+                          )}
+                        </div>
+                        <span className="text-xs flex gap-2 mt-4 text-black ml-auto">
+                          {moment(msg.createdAt).format(" Do MMMM, YYYY")},
+                          {moment(msg.createdAt).format("hh:mm A")}
+                          <IoCheckmarkDone
+                            size={16}
+                            className={`ml-auto ${
+                              !isSeen[msg._id] ? "text-black" : "text-red-400"
+                            }`}
+                          />
+                        </span>
+                      </div>
                       {!isSameUserAsPrevious &&
                         (user._id === msg.msgByUserId ? (
-                          <div className="flex gap-3 justify-center items-center">
-                            <p className="text-xs w-fit">
-                              {moment(msg.createdAt).format("hh:mm A")}
-                            </p>
-                            <div className="flex justify-center items-center gap-2">
-                              <p className="text-xs font-bold">
-                                {user._id === msg.msgByUserId
-                                  ? "You"
-                                  : `${msg.sender_name}`}
-                              </p>
-                              <Avatar
-                                width={30}
-                                height={30}
-                                imageUrl={
-                                  msg.sender_profile_pic ||
-                                  msg.reciever_profile_pic
-                                }
-                                name={msg.sender_name || msg.reciever_name}
-                                userId={msg?._id}
-                              />
-                            </div>
-                          </div>
-                        ) : (
-                          <div className="flex gap-3 justify-center items-center">
-                            <div className="flex justify-center items-center gap-2">
-                              <Avatar
-                                width={30}
-                                height={30}
-                                imageUrl={
-                                  msg.sender_profile_pic ||
-                                  msg.reciever_profile_pic
-                                }
-                                name={msg.sender_name || msg.reciever_name}
-                                userId={msg?._id}
-                              />
-                              <p className="text-xs font-bold">
-                                {user._id === msg.msgByUserId
-                                  ? "You"
-                                  : `${msg.sender_name}`}
-                              </p>
-                            </div>
-                            <p className="text-xs w-fit">
-                              {moment(msg.createdAt).format("hh:mm A")}
-                            </p>
-                          </div>
-                        ))}
-                      {msg.text && (
-                        <p
-                          className={` px-4 -mb-1 py-4 w-fit text-[0.9rem] rounded-lg min-w-16 ${
-                            user._id === msg.msgByUserId
-                              ? "bg-green-500 mr-10"
-                              : "bg-white ml-9"
-                          }`}
-                        >
-                          {msg.text}
-                        </p>
-                      )}
-
-                      <div className="w-full">
-                        {msg?.imageUrl && (
-                          <Image
-                            src={msg?.imageUrl}
-                            width={300}
-                            height={300}
-                            alt="no Image"
-                            className="w-[300px] h-[300px] object-scale-down"
-                          />
-                        )}
-                        {msg?.videoUrl && (
-                          <video
-                            src={
-                              msg?.videoUrl ===
-                              `data:video/webm;base64,${msg.videoUrl}`
-                                ? msg?.videoUrl ===
-                                  `data:video/webm;base64,${msg.videoUrl}`
-                                : msg.videoUrl
-                            }
-                            controls
-                            muted
-                            alt="no Video"
-                            className="w-[300px] h-[300px] object-scale-down"
-                          />
-                        )}
-                        {msg.audioUrl && (
-                          <div>
-                            {/* <AudioLinesIcon /> */}
-                            <audio
-                              controls
-                              src={`data:audio/webm;base64,${msg.audioUrl}`}
-                              type="audio/webm"
+                          <div className="float-end relative bottom-6">
+                            <Avatar
+                              width={30}
+                              height={30}
+                              imageUrl={
+                                msg.sender_profile_pic ||
+                                msg.reciever_profile_pic
+                              }
+                              name={msg.sender_name || msg.reciever_name}
+                              userId={msg?._id}
                             />
                           </div>
-                        )}
-                      </div>
-                      {messaging && isLatestMessage &&  (
+                        ) : (
+                          <div className="relative float-start bottom-6 ">
+                            <Avatar
+                              width={30}
+                              height={30}
+                              imageUrl={
+                                msg.sender_profile_pic ||
+                                msg.reciever_profile_pic
+                              }
+                              name={msg.sender_name || msg.reciever_name}
+                              userId={msg?._id}
+                            />
+                          </div>
+                        ))}
+                      {messaging && isLatestMessage && (
                         <div className="flex justify-center items-center mt-4">
-                         <p
-                          className={` px-4 -mb-1 py-1 w-fit text-sm rounded-2xl min-w-14 ${
-                            user._id === msg.msgByUserId
-                              ? "bg-green-500 mr-10"
-                              : "bg-white ml-7"
-                          }`}
-                        >
-                          <LoadingStyle />
-                        </p>
+                          <p
+                            className={` px-4 -mb-1 py-1 w-fit text-sm rounded-2xl min-w-14 ${
+                              user._id === msg.msgByUserId
+                                ? "bg-green-500 mr-10"
+                                : "bg-white ml-7"
+                            }`}
+                          >
+                            <LoadingStyle />
+                          </p>
                         </div>
                       )}
                     </div>
                   );
                 })}
 
-                <section className="h-12 z-20 flex items-center absolute bottom-7 gap-4 px-1 w-full   ">
-                  <div className="flex justify-center items-center bg-white rounded-lg lg:w-[62.5rem] sm:w-[60rem] md:w-[62.5rem] lg:h-full sm:h-12 lg:mb-0 sm:mb-20">
+                <section className="fixed h-12 z-20 flex items-center bottom-7 gap-4 px-1 w-full   ">
+                  <div className="flex justify-center items-center bg-white rounded-lg lg:w-[68.5rem] sm:w-[60rem] md:w-[62.5rem] lg:h-full sm:h-12 lg:mb-0 sm:mb-20">
                     <div className="relative lg:flex sm:hidden items-center justify-center">
                       <IVSender
                         setLoading={setLoading}
                         setMessage={setMessage}
                       />
-                      {/* <div className="flex justify-center items-center mt-2 h-8">
-                        <BackgroundChanger setBackground={setBackground} />
-                      </div> */}
                       <div className=" mt-4 ml-2 h-10 w-10">
                         <EmojiPickerComponet
                           onEmojiSelect={handleEmojiMessage}
@@ -593,19 +627,19 @@ export default function MessagePage() {
                         onChange={handleOnChange}
                         onKeyDown={(e) => {
                           if (e.key === "Enter") {
-                            e.preventDefault(); // Prevent form submission or default behavior
+                            e.preventDefault();
                             handleSendMessage();
                           }
                         }}
                       />
                     </form>
+                    <button
+                      onClick={handleSendMessage}
+                      className="relative h-12 w-16 z-20  rounded-lg flex justify-center items-center bg-green-400 hover:text-white lg:bottom-0 lg:right-0 sm:bottom-10 md:bottom-10 sm:right-8 md:right-8"
+                    >
+                      <MdSend size={25} />
+                    </button>
                   </div>
-                  <button
-                    onClick={handleSendMessage}
-                    className=" h-12 w-12  rounded-lg flex justify-center items-center bg-green-400 hover:text-white absolute lg:bottom-0 lg:right-16 sm:bottom-10 md:bottom-10 sm:right-8 md:right-8"
-                  >
-                    <MdSend size={25} />
-                  </button>
                 </section>
               </div>
             </div>
@@ -673,32 +707,33 @@ export default function MessagePage() {
                 <LoadingStyle bg="bg-slate-300" />
               </div>
             )}
-
             <div className="hidden">
-              <video height="200px" width="300px" ref={myVideo} autoPlay />
               <video height="300px" width="300px" ref={remoteVideo} autoPlay />
             </div>
 
             {calling && (
-              <div
-                style={{ backgroundImage: `url(${dataUser.profile_pic})` }}
-                className="w-full h-[28rem] sticky bottom-56 overflow-hidden p-2 text-white bg-no-repeat bg-contain bg-center rounded-2xl"
-              >
-                <div className="flex flex-col items-center justify-center">
-                  <h1 className="font-semibold text-3xl">{dataUser?.name}</h1>
-                  <div className="flex items-center mt-1 font-bold gap-2 text-xl">
-                    <PiPhoneCallFill size={25} />
-                    <span>Calling...</span>
-                  </div>
-                  <div className="flex justify-center items-center gap-5 mt-5">
-                    <div className="w-40 h-40 border-2 border-gray-300 rounded-lg overflow-hidden shadow-lg">
-                      <video
-                        className="w-full h-full object-cover"
-                        ref={myVideo}
-                        autoPlay
-                        // muted
-                      />
+              <div className="h-full w-full  sticky bottom-0 overflow-hidden flex justify-center items-center p-4 text-white">
+                <div className="w-fit min-w-96 top-0 right-0 opacity-90 rounded-md bg-green-800 p-6">
+                  <div>
+                    <h1 className="font-semibold flex justify-center text-6xl my-0 mt-1">
+                      {dataUser?.name}
+                    </h1>
+                    <div className="flex justify-center mt-4 font-bold gap-2 text-xl">
+                      <p>
+                        <PiPhoneCallFill size={25} />
+                      </p>
+                      Called...
                     </div>
+                  </div>
+                  <div className="flex mt-6 justify-center">
+                    <Avatar
+                      width={100}
+                      height={100}
+                      imageUrl={dataUser?.profile_pic}
+                      name={dataUser?.name}
+                    />
+                  </div>
+                  <div className="flex justify-center items-center mt-5">
                     <div
                       className={`w-60 h-60 border-2 border-gray-300 rounded-lg overflow-hidden shadow-lg`}
                     >
@@ -709,41 +744,20 @@ export default function MessagePage() {
                       />
                     </div>
                   </div>
-                  <div className="flex mt-8 gap-5 justify-center">
-                    <div className="bg-slate-200 rounded-full text-black">
+                  <div className="flex mt-10 justify-between mx-12">
+                    <div className="bg-red-500 p-[6px]  flex rounded-md">
                       <button
-                        className="p-2"
-                        onClick={() => {
-                          if (myVideo.current) {
-                            const enabled = myVideo.current.muted;
-                            myVideo.current.muted = !enabled;
-                          }
-                        }}
+                        onClick={handleAnswerCall}
+                        className="flex items-center text-white gap-2 "
                       >
-                        <HiMiniSpeakerWave size={30} />
+                        Accept
+                        <PiPhoneCallFill />
                       </button>
                     </div>
-                    <div className="bg-slate-200 rounded-full text-black">
-                      <button
-                        className="p-2"
-                        onClick={() => {
-                          if (stream) {
-                            const audioTrack = stream
-                              .getTracks()
-                              .find((track) => track.kind === "audio");
-                            if (audioTrack) {
-                              audioTrack.enabled = !audioTrack.enabled;
-                            }
-                          }
-                        }}
-                      >
-                        <IoMdMicOff size={30} />
-                      </button>
-                    </div>
-                    <div className="bg-red-500 p-3 flex rounded-full">
+                    <div className="bg-red-500 p-[6px]  flex rounded-md">
                       <button
                         onClick={handleEndCall}
-                        className="flex items-center text-white gap-2"
+                        className="flex items-center text-white gap-2 "
                       >
                         Decline
                         <MdCallEnd />

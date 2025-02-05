@@ -64,7 +64,7 @@ const FallingLeaves = () => {
             y: "100vh",
           }}
           transition={{
-            duration: Math.random() * 13 + 10, // Random duration between 5 and 13 seconds
+            duration: Math.random() * 15 + 12, // Random duration between 5 and 13 seconds
             delay: leaf.delay,
             ease: "linear",
             repeat: Infinity

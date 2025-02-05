@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-export default function MusicPlayer({ openSpotify }) {
+export default function MusicPlayer() {
   const [isPlaylistId, setIsPlaylistId] = useState();
   const token =
     "BQC2y3DWzyrB2ChTXzvOMI96s3vn6Y4BJJk53_CydcLbYjSqYcEINbDpM5KVum_Qe_D4a7rJKM-CESCqbJYEtS_EhWXuZaHKUynTnrP2dJb24wMZpQKLTQE5h1gQsvgDjo5p1hd2H7mYep5aeZAdkSK3t0L-arIdzUmDr9DvHy53ksAc9x-oBz79cIBlSWOmxb9mr9E_oAUz_m0qRFDTjFwfJ7BYdZPJrVtzlJ9KbRl0RR0cAKr189eofSiNvn-LexYBJs679-UtUxSQXBmzczS_X_7OKo_B";
@@ -88,7 +88,6 @@ export default function MusicPlayer({ openSpotify }) {
           textAlign: "center",
           boxShadow: "0 4px 8px rgba(0, 0, 0, 0.3)",
         }}
-        className={openSpotify ? "" : "hidden"}
       >
         <iframe
           title="Spotify Embed: Recommendation Playlist"

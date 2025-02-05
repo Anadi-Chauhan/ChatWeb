@@ -97,7 +97,7 @@ export default function RegisterationForm({setShowRegister}) {
               <p className="text-sm mt-2 flex gap-1">
                 Already a Member?
                 <button
-                  onClick={()=>setShowRegister(false)}
+                  onClick={()=>setShowRegister(true)}
                   className="text-red-400 hover:underline flex items-center"
                 >
                   Log in <BiRightArrowAlt size={20} />

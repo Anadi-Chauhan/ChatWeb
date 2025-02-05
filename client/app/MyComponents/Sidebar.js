@@ -11,15 +11,21 @@ import { Providers } from "../Provider";
 import moment from "moment";
 import { CiSearch } from "react-icons/ci";
 import { SeparatorHorizontal } from "lucide-react";
+import NavLink from "./NavLink";
 
 export default function SideBar() {
   const [allUser, setAllUser] = useState([]);
+  const [filteredUsers, setFilteredUsers] = useState([]);
+  const [search, setSearch] = useState("");
   const socketConnection = useSelector(
     (state) => state?.user?.socketConnection
   );
   const user = useSelector((state) => state?.user);
 
   useEffect(() => {
+    const cachedConversations =
+      JSON.parse(localStorage.getItem("conversations")) || [];
+    setAllUser(cachedConversations);
     if (socketConnection) {
       socketConnection.emit("sidebar", user?._id);
       socketConnection?.on("conversation", (data) => {
@@ -45,9 +51,28 @@ export default function SideBar() {
           }
         });
         setAllUser(conversationUserData);
+        localStorage.setItem(
+          "conversations",
+          JSON.stringify(conversationUserData)
+        );
       });
     }
   }, [socketConnection, user]);
+
+  useEffect(() => {
+    setFilteredUsers(allUser);
+  }, [allUser]);
+
+  useEffect(() => {
+    if (!search.trim()) {
+      setFilteredUsers(allUser);
+    } else {
+      const results = allUser.filter((user) =>
+        user?.userDetails?.name?.toLowerCase().includes(search.toLowerCase())
+      );
+      setFilteredUsers(results);
+    }
+  }, [search, allUser]);
 
   return (
     <>
@@ -55,16 +80,15 @@ export default function SideBar() {
         <div className="w-full h-screen bg-gray-50">
           <div className="w-full">
             <div className="h-16 bg-white flex flex-col justify-center items-start px-4">
-              <div className="text-xl sm:text-2xl font-bold font-roboto mt-4 text-black">
+              <div className="text-xl sm:text-2xl ont-bold font-roboto mt-4 text-black">
                 Message
-                <p className="text-xs sm:text-sm mt-1 font-roboto font-normal text-slate-500">
+                <p className="text-xs sm:text-sm font-roboto font-normal text-slate-500">
                   {moment().format("dddd")},{moment().format(" Do MMMM, YYYY")}
                 </p>
               </div>
-
             </div>
 
-            <div className="bg-white h-[calc(100vh-4rem)] py-4 px-2 overflow-y-auto scrollbar-none">
+            <div className="bg-white h-[calc(100vh-4rem)] px-2 py-4 overflow-y-auto scrollbar-none">
               {/* Search Bar */}
               <div className="flex justify-center items-center mt-4 mx-1 sm:mx-4 h-5 sm:h-12 bg-gray-100 rounded-2xl">
                 <div className="ml-3 w-8 flex justify-center items-center">
@@ -74,6 +98,8 @@ export default function SideBar() {
                   type="text"
                   placeholder="Search now..."
                   className="flex-1 outline-none bg-gray-100 rounded-3xl px-2 text-sm sm:text-base"
+                  onChange={(e) => setSearch(e.target.value)} // Triggers `useEffect`
+                  value={search}
                 />
                 <p className="mr-5 text-xs sm:text-sm text-gray-600">/F</p>
               </div>
@@ -99,12 +125,12 @@ export default function SideBar() {
               )}
 
               {/* User Conversations */}
-              {allUser.map((conv) => {
+              {filteredUsers.map((conv) => {
                 const createdAt = conv?.lastMsg?.createdAt;
                 const messageDate = moment(createdAt);
 
                 return (
-                  <Link
+                  <NavLink
                     href={"/" + conv?.userDetails?._id}
                     key={conv?._id}
                     className="flex items-center mt-3 sm:mt-[6px] gap-2 sm:gap-3 py-3 px-2 rounded hover:bg-slate-100 border-b-2 border-b-gray-200 cursor-pointer"
@@ -147,7 +173,7 @@ export default function SideBar() {
                         {conv?.unseenMessage}
                       </p>
                     )}
-                  </Link>
+                  </NavLink>
                 );
               })}
             </div>

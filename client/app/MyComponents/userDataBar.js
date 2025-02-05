@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import Avatar from "../Components/helpers/Avatar";
 import { useSelector } from "react-redux";
+import { BsPuzzle } from "react-icons/bs";
 
 export default function UserSideBaar({ onClose }) {
   const [quote, setQuote] = useState();
@@ -13,39 +14,46 @@ export default function UserSideBaar({ onClose }) {
   );
   const user = useSelector((state) => state?.user);
 
-  async function getQuote() {
-    try {
-      const response = await fetch("https://dummyjson.com/quotes/random");
-      const data = await response.json();
-      console.log("quote", data);
-      setQuote(data);
-    } catch (error) {
-      toast("Error");
-    }
-  }
   useEffect(() => {
-    getQuote();
+    const cachedQuote = sessionStorage.getItem("quote");
+    setQuote(JSON.parse(cachedQuote));
+    const fetchQuote = async () => {
+      try {
+        const response = await fetch("https://dummyjson.com/quotes/random");
+        const data = await response.json();
+        setQuote(data);
+        sessionStorage.setItem("quote", JSON.stringify(data));
+      } catch (error) {
+        toast("Error fetching quote");
+      }
+    };
+
+    if (!cachedQuote) {
+      fetchQuote();
+    }
   }, []);
 
   return (
     <>
-      <div>
-        <div className=" w-fit h-fit fixed rounded-xl bg-slate-200 right-1/4 mt-60 max-w-96 z-10">
-          <div className="p-4 rounded w-full max-w-sm flex gap-5">
-            <Avatar
-              imageUrl={user?.profile_pic}
-              width={110}
-              height={110}
-              name={user?.name}
-            />
-            <h1 className="font-bold text-2xl flex justify-center items-center">{user.name}</h1>
-          </div>
-          <div className="p-2">
-            <h2 className="font-medium text-lg">Today&apos;s Quote</h2>
-            <div className="font-semibold" >
-            <h3>{quote && quote.quote}</h3>
-            <p className="ml-64  italic">{quote && quote.author}</p>
-            </div>
+      <div className="fixed right-1/4 top-60 w-fit h-fit bg-gray-100 shadow-lg rounded-xl z-10">
+        <div className="p-5 flex gap-5 items-center">
+          <Avatar
+            imageUrl={user?.profile_pic}
+            width={100}
+            height={100}
+            name={user?.name}
+          />
+          <h1 className="font-bold text-2xl">{user?.name}</h1>
+        </div>
+        <div className="p-5">
+        <button className="flex items-center gap-2 px-6 py-2 text-lg font-medium border-2 border-blue-500 text-blue-800 rounded-lg transition-all duration-300 hover:bg-blue-500 hover:text-white active:scale-95">
+          <span>Complete Your Profile</span>
+          <BsPuzzle size={25} />
+        </button>
+          <h2 className="font-medium text-lg mt-5">Today&apos;s Quote</h2>
+          <div className="mt-2">
+            <h3 className="font-semibold">{quote?.quote}</h3>
+            <p className="text-right italic text-sm">{quote?.author}</p>
           </div>
         </div>
       </div>

@@ -40,19 +40,19 @@ export default function SearchUser({ onClose }) {
 
   return (
     <>
-  <div className="flex justify-center items-center h-8 w-2/3 sm:w-1/2 md:w-2/3 lg:w-full bg-gray-100 rounded-3xl">
-  <div className="h-12 w-12 flex justify-center items-center">
+  <div className="flex justify-center items-center h-8 sm:w-1/2 md:w-2/3 lg:w-96 w-96 bg-gray-100 rounded-3xl">
+  <div className="h-12 w-14 flex text-gray-700 justify-center items-center">
     <CiSearch size={23} />
   </div>
   <input
     type="text"
-    placeholder="Search now..."
-    className="w-full outline-none p-1 h-full bg-gray-100 rounded-3xl z-20 px-4"
+    placeholder="Search for new friends to chat..."
+    className="w-full outline-none p-1 h-full bg-gray-100 placeholder-gray-700 rounded-3xl z-20 px-2"
     onChange={(e) => setSearch(e.target.value)}
     value={search}
     onFocus={() => setOpenModel(true)}
   />
-  <p className="mr-3 text-gray-600">/F</p>
+  <p className="mr-3 text-gray-700">/F</p>
 </div>
 
 {openModel && (
