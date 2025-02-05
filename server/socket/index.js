@@ -76,7 +76,6 @@ io.on("connection", async (socket) => {
     io.emit("group-message", messageDetails);
   });
 
-  // Handle leaving a group
   socket.on("leave-group", ({ groupId, groupName }) => {
     socket.leave(groupId);
 
@@ -173,7 +172,7 @@ io.on("connection", async (socket) => {
 
     io.to(data?.sender).emit("message", getConversationMessage.messages || []);
     io.to(data?.reciever).emit(
-      "message",
+      "new-message",
       getConversationMessage.messages || []
     );
 
@@ -191,11 +190,10 @@ io.on("connection", async (socket) => {
   socket.on("seen", async (msgByUserId) => {
     let conversation = await ConversationModel.findOne({
       $or: [
-        { sender: user?._id, reciever: msgByUserId },
-        { sender: msgByUserId, reciever: user?._id },
+        { sender: user?._id?.toString(), reciever: msgByUserId },
+        { sender: msgByUserId, reciever: user?._id?.toString() },
       ],
     });
-
     const conversationMessageId = conversation?.messages || [];
 
     const updateMessage = await MessageModel.updateMany(
@@ -205,7 +203,6 @@ io.on("connection", async (socket) => {
       },
       { $set: { seen: true } }
     );
-
     const conversationSender = await getConversation(user?._id?.toString());
     const conversationReciever = await getConversation(msgByUserId);
     io.to(user?._id?.toString()).emit("coversation", conversationSender);

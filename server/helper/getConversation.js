@@ -12,16 +12,14 @@ const getConversation = async (currentUserId) => {
               const msgByUserId = curr?.msgByUserId?.toString()
               if (msgByUserId !== currentUserId) {
                 return prev + (curr?.seen ? 0 : 1)
-                
-              }else{
-                prev
               }
+                return prev
             },0);
           return {
             _id: conv?._id,
             sender: conv?.sender,
             reciever: conv?.reciever,
-            unseenMessage: countUnseenMsg,
+            unseenMessage: countUnseenMsg || 0,
             lastMsg: conv?.messages[conv?.messages?.length - 1],
           };
       })

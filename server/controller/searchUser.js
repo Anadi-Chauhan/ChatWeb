@@ -1,5 +1,6 @@
 const userModel = require("../models/UserModel")
 
+
 async function searchUser(request,response){
     try {
         const {search} = request.body

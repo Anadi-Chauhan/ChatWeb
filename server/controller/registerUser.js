@@ -18,7 +18,6 @@ async function registerUser(request,response) {
                 error : true
             })
         }
-
         const salt = await bcryptjs.genSalt(10);
         const hashPassword = await bcryptjs.hash(password, salt);
 
