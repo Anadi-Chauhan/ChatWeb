@@ -35,7 +35,7 @@ export default function UserSideBaar({ onClose }) {
 
   return (
     <>
-      <div className="fixed right-1/4 top-60 w-fit h-fit bg-gray-100 shadow-lg rounded-xl z-10">
+      <div className="fixed right-1/4 top-60 max-w-md w-fit h-fit bg-gray-100 shadow-lg rounded-xl z-10">
         <div className="p-5 flex gap-5 items-center">
           <Avatar
             imageUrl={user?.profile_pic}
