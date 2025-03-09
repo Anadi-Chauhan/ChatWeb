@@ -129,7 +129,7 @@ export default function SideBar() {
                 const messageDate = moment(createdAt);
 
                 return (
-                  <div >
+                  <div key={conv?._id}>
                   <NavLink
                     href={"/" + conv?.userDetails?._id}
                     key={conv?._id}
