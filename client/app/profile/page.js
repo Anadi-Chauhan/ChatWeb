@@ -37,7 +37,7 @@ export default function MyProfile() {
   };
   useEffect(() => {
     fetchUserDetails();
-  }, []);
+  });
   const [isdata, setIsData] = useState({
     bgImage: "",
     profile_pic: "",

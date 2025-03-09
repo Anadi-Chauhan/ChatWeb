@@ -339,7 +339,7 @@ export default function MessagePage({ background }) {
 
   useEffect(() => {
     fetchUserDetails();
-  }, []);
+  });
 
   useEffect(() => {
     const socket = getSocket();
