@@ -114,7 +114,7 @@ export default function GuestForm() {
                 </li>
                 <li>Use members mode for better experience and features</li>
                 <li>
-                  Not all users in the online list may be online so don't wait for
+                  Not all users in the online list may be online so do not wait for
                   them
                 </li>
                 <li>Respect all the members</li>

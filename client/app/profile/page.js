@@ -314,7 +314,7 @@ export default function MyProfile() {
                     We Value Your Feedback!
                   </h2>
                   <p className="text-slate-500 mt-4">
-                    Help us improve! What's your favorite feature in our chat
+                    Help us improve! What iss your favorite feature in our chat
                     rooms?
                   </p>
                   <div className="mt-4 space-y-3">
