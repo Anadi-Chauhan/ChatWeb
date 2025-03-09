@@ -4,7 +4,7 @@ async function logout(request,response) {
         const cookieOption = {
             httpOnly : true,
             sameSite: 'Strict',
-            secure : true,
+            // secure : true, 
             path:"/",
         }
         return response.clearCookie("token",cookieOption).status(200).json({

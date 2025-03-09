@@ -22,6 +22,34 @@ const userSchema = new mongoose.Schema({
         type: String,
         default : "",
     },
+    bgImage: {
+        type: String,
+        default: "",
+    },
+    about: {
+        type: String,
+        default: "",
+    },    
+    work: {
+        type: String,
+        default: "",
+    },    
+    education: {
+        type: String,
+        default: "",
+    },    
+    relation: {
+        type: String,
+        default: "",
+    },    
+    goal: {
+        type: String,
+        default: "",
+    },    
+    location: {
+        type: String,
+        default: "",
+    },
 },{
     timestamps : true
 })

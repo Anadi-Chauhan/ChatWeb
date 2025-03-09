@@ -22,17 +22,17 @@ const io = new Server(server, {
 });
 
 const onlineUser = new Set();
-const guestUser = new Set()
+const guestUser = new Set();
 
 io.on("connection", async (socket) => {
   const token = socket.handshake.auth.token;
 
   const user = await getUserDetailsFromToken(token);
-    socket.join(user?._id.toString());
-    onlineUser.add(user?._id?.toString());
-    userSocketMap[user?._id] = socket.id;
-    io.emit("setup socket", socket.id);
-    io.emit("onlineUser", Array.from(onlineUser));
+  socket.join(user?._id.toString());
+  onlineUser.add(user?._id?.toString());
+  userSocketMap[user?._id] = socket.id;
+  io.emit("setup socket", socket.id);
+  io.emit("onlineUser", Array.from(onlineUser));
   socket.on("join-group", async (groupId) => {
     socket.join(groupId);
     const token = socket.handshake.auth.token;
@@ -56,12 +56,10 @@ io.on("connection", async (socket) => {
   });
 
   socket.on("send-group-message", async (data) => {
-
-  
     const messageDetails = {
       senderId: data.senderId,
-      senderName : data.senderName,
-      message : data.text,
+      senderName: data.senderName,
+      message: data.text,
       timestamp: new Date(),
     };
 
@@ -81,7 +79,7 @@ io.on("connection", async (socket) => {
 
     io.to(groupId).emit("group-notification", {
       message: `${user.name} left the group "${groupName}"`,
-    }); 
+    });
     io.to(groupId).emit("group-notifications", {
       message: `${user.name} left the group "${groupName}"`,
     });
@@ -143,7 +141,7 @@ io.on("connection", async (socket) => {
       text: data?.text,
       imageUrl: data?.imageUrl,
       videoUrl: data?.videoUrl,
-      audioUrl : data?.audioUrl,
+      audioUrl: data?.audioUrl,
       msgByUserId: data?.msgByUserId,
       recieverUserId: data?.recievedByUserId,
       sender_name: data?.sender_name,

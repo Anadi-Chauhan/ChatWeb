@@ -8,14 +8,22 @@ async function updateUserDetails(request,response) {
 
         const user = await getUserDetailsFromToken(token)
 
-        const {name, profile_pic} = request.body
+        const {name,bgImage, profile_pic,about,work,education,relation,goal,location} = request.body
 
         const updateUser = await userModel.updateOne({_id : user._id},{
             name,
-            profile_pic
+            profile_pic,
+            about,
+            work,
+            education,
+            relation,
+            goal,
+            location,
+            bgImage
         })
 
         const userInformation = await userModel.findById(user._id)
+        console.log("xxxx",userInformation)
 
         return response.json({
             message :"user updated successfully",

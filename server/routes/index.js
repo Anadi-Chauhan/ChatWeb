@@ -9,6 +9,7 @@ const guestAccountVerification = require('../controller/guestAccount')
 const login = require('../controller/login')
 const guestDetails = require('../controller/guestDetails')
 const searchGuestUser = require('../controller/searchGuestUser')
+// const FriendDetails = require('../helper/getUserDeatailsFromId')
 
 const router = express.Router()
 
@@ -19,6 +20,8 @@ router.post('/register',registerUser)
 router.post('/verify-otp',verifyOtp)
 
 router.get("/user-details",userDetails)
+
+// router.get("/user-details",FriendDetails)
 
 router.get("/guest-details",guestDetails)
 
@@ -33,6 +36,8 @@ router.post('/search-guest-user',searchGuestUser)
 router.post('/guest-user',guestAccountVerification)
 
 router.post('/login',login)
+
+
 
 
 module.exports = router
