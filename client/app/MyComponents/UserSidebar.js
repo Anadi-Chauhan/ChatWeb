@@ -14,7 +14,9 @@ import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import Link from "next/link";
 import MusicPlayer from "./MusicPlayer";
 import BackgroundChanger from "./MessagePageComponents/BackgroundChanger";
-
+import { toast } from "sonner";
+import { logout } from "../redux/userSlice";
+import { deleteDBOnLogout } from "../[userId]/page";
 export default function UserDataBar({setChangedBackground}) {
   const [editUser, setEditUser] = useState(false);
   const [openSpotify, setOpenSpotify] = useState(false);
@@ -30,21 +32,27 @@ export default function UserDataBar({setChangedBackground}) {
   const handleLogout = async () => {
     try {
       const URL = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/logout`;
-      const response = await axios({
+      const response = await axios.post({
         url: URL,
       });
-      if (response) {
-        dispatch(logout());
-        console.log("vbvbvb", response);
+  
+      if (response && response.status === 200) {
+        dispatch(logout()); 
         console.log("Logged out successfully");
-        router.push("/register");
-        sessionStorage.clear("email");
-        sessionStorage.clear("name");
-        sessionStorage.clear("profile_pic");
-        localStorage.clear("token");
+        await deleteDBOnLogout();
+        router.push("/");
+        sessionStorage.removeItem("email");
+        sessionStorage.removeItem("name");
+        sessionStorage.removeItem("profile_pic");
+        sessionStorage.removeItem("quote");
+        localStorage.removeItem("token");
+        localStorage.removeItem("conversations");
+      } else {
+        toast.error("Logout failed. Please try again.");
       }
     } catch (error) {
-      toast("not working");
+      console.error("Logout error:", error);
+      toast.error(error?.response?.data?.message || "Logout failed");
     }
   };
 
@@ -56,7 +64,7 @@ export default function UserDataBar({setChangedBackground}) {
   return (
     <>
       <Providers>
-        <div className="mt-2  font-roboto font-light">
+        <div className="mt-2 font-roboto font-light">
           <div className="w-full grid grid-rows-[5.65vh,70vh,10vh]">
             <div
               title={user?.name}
@@ -71,7 +79,7 @@ export default function UserDataBar({setChangedBackground}) {
                   <p className="ml-2 mt-1">Home</p>
                 </GNavLink>
               </div>
-
+{/* 
               <div className="cursor-pointer mt-2  hover:text-primary">
                 <button
                   onClick={() => setOpenSpotify(!openSpotify)}
@@ -79,7 +87,7 @@ export default function UserDataBar({setChangedBackground}) {
                 >
                   <FaPlay /> Play Music
                 </button>
-              </div>
+              </div> */}
 
               <div
                 className={`gap-2 cursor-pointer p-1 hover:text-primary

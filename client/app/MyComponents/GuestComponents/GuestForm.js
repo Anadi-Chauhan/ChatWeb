@@ -10,6 +10,7 @@ import { useDispatch } from "react-redux";
 import { setToken } from "@/app/redux/userSlice";
 import Navbar from "../Navbar";
 import { Providers } from "@/app/Provider";
+import Link from "next/link";
 
 export default function GuestForm() {
   const [data, setData] = useState({
@@ -51,8 +52,6 @@ export default function GuestForm() {
 
     const URL = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/guest-user`;
 
-
-
     try {
       const response = await axios.post(URL, data, {
         headers: {
@@ -64,7 +63,7 @@ export default function GuestForm() {
       if (response.data.success) {
         sessionStorage.setItem("name", data.name);
 
-        console.log("Token",response.data.token)
+        console.log("Token", response.data.token);
 
         // Set token in Redux and localStorage
         dispatch(setToken(response.data.token));
@@ -93,21 +92,44 @@ export default function GuestForm() {
   return (
     <>
       <Providers>
-        <div className="flex flex-col min-h-screen bg-black">
-          <div className="absolute w-full h-full bg-no-repeat bg-cover bg-center opacity-20 bg-[url('/11.webp')]"></div>
-          <div className="absolute top-4 right-4 sm:right-6">
-            <Navbar />
-          </div>
-          <div className="grid flex-grow items-center justify-center">
-            <div className="relative shadow-[rgba(132,197,135,0.1)] shadow-2xl bg-[rgba(66,89,67,1)] text-white rounded-lg p-6 sm:p-8 lg:p-10 max-w-md w-full">
-              <h1 className="text-lg font-bold mb-6">
+        <div className="w-full h-screen flex flex-col bg-black">
+          {/* Background image */}
+          <div className="absolute w-full h-full bg-no-repeat bg-cover bg-center opacity-20 bg-[url('/HomeMainBg.jpg')]"></div>
+
+          <div className=" flex gap-10 items-center justify-center mt-16 flex-grow"> {/* Added flex-grow */}
+            <div className="fixed top-4 right-4 sm:right-6">
+              <Navbar />
+            </div>
+            <div className="text-white relative">
+              <h1 className="text-2xl ml-3 font-bold">
+                Important Points To Remember:
+              </h1>
+              <ol className="list-decimal font-roboto font-thin mt-4 pl-5">
+                <li>
+                  Do not go back or close the chat this can delete all your
+                  chats
+                </li>
+                <li>
+                  If you go back you have to sign up again, No login available
+                </li>
+                <li>Use members mode for better experience and features</li>
+                <li>
+                  Not all users in the online list may be online so don't wait for
+                  them
+                </li>
+                <li>Respect all the members</li>
+                <li>Do not try to spam</li>
+              </ol>
+            </div>
+            <div className="shadow-[rgba(132,197,135,0.1)] shadow-2xl bg-[rgba(66,89,67,1)] text-white rounded-lg p-6 sm:p-8 lg:p-10 max-w-md w-full">
+              <h1 className="text-lg relative font-bold mb-6">
                 Welcome To Infinity Chat...
               </h1>
               <h2 className="text-2xl font-bold mb-2">Log In as Guest</h2>
-              <p className="text-sm uppercase tracking-wide mb-6">
+              <p className="text-sm relative uppercase tracking-wide mb-6">
                 Changed your mind?
               </p>
-              <p className="text-sm flex gap-1 mb-6">
+              <p className="text-sm relative flex gap-1 mb-6">
                 Wanna Join Us
                 <button
                   className="text-red-400 hover:underline flex items-center font-bold"
@@ -129,7 +151,7 @@ export default function GuestForm() {
                     onChange={handleChange}
                     placeholder="Enter Name"
                     required
-                    className="w-full placeholder-slate-500 text-black bg-[#fffbfba8] text-sm border border-gray-700 rounded-lg px-4 py-2 focus:outline-none"
+                    className="w-full placeholder-slate-500 relative text-black bg-[#fffbfba8] text-sm border border-gray-700 rounded-lg px-4 py-2 focus:outline-none"
                   />
                 </div>
                 <div className="flex gap-4 mb-4">
@@ -145,7 +167,7 @@ export default function GuestForm() {
                       onChange={handleChange}
                       placeholder="Gender"
                       required
-                      className="w-full placeholder-slate-500 text-black bg-[#fffbfba8] text-sm border border-gray-700 rounded-lg px-4 py-2 focus:outline-none"
+                      className="w-full placeholder-slate-500 relative text-black bg-[#fffbfba8] text-sm border border-gray-700 rounded-lg px-4 py-2 focus:outline-none"
                     />
                   </div>
                   <div>
@@ -160,23 +182,59 @@ export default function GuestForm() {
                       onChange={handleChange}
                       placeholder="Age"
                       required
-                      className="w-full placeholder-slate-500 text-black bg-[#fffbfba8] text-sm border border-gray-700 rounded-lg px-4 py-2 focus:outline-none"
+                      className="w-full placeholder-slate-500 relative text-black bg-[#fffbfba8] text-sm border border-gray-700 rounded-lg px-4 py-2 focus:outline-none"
                     />
                   </div>
                 </div>
                 <ReCAPTCHA
                   sitekey={process.env.NEXT_PUBLIC_SITE_KEY}
                   onChange={handleCaptcha}
-                  className="mt-2 flex justify-center"
+                  className="mt-2 relative flex justify-center"
                 />
                 <button
                   type="submit"
                   disabled={!captcha}
-                  className="w-full mt-4 px-4 py-2 text-sm rounded-lg bg-green-500 disabled:cursor-not-allowed disabled:bg-gray-400"
+                  className="w-full relative mt-4 px-4 py-2 text-sm rounded-lg bg-green-500 disabled:cursor-not-allowed disabled:bg-gray-400"
                 >
                   Create Account
                 </button>
               </form>
+            </div>
+          </div>
+
+          {/* Footer - Always at the bottom */}
+          <div className="h-12 w-full z-10 bg-opacity-15 bg-green-900 text-white mt-auto"> {/* Added mt-auto to ensure it stays at the bottom */}
+            <div className="flex flex-wrap justify-around items-center h-full px-4 text-xs">
+              <p>
+                2024 ©{" "}
+                <Link href="/" className="text-blue-500 hover:text-blue-300">
+                  Infinity-Chat.org - Free Chat Rooms
+                </Link>
+              </p>
+              <Link
+                href="/terms"
+                className="cursor-pointer hover:text-blue-500"
+              >
+                Terms of Service
+              </Link>
+              <Link
+                href="/terms"
+                className="cursor-pointer hover:text-blue-500"
+              >
+                Privacy Policy
+              </Link>
+              <Link
+                href="/support"
+                className="cursor-pointer hover:text-blue-500"
+              >
+                Contact us
+              </Link>
+              <Link
+                href="/support"
+                className="cursor-pointer hover:text-blue-500"
+              >
+                Language
+              </Link>
             </div>
           </div>
         </div>

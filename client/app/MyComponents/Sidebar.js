@@ -6,11 +6,9 @@ import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { FiArrowUpLeft } from "react-icons/fi";
 import { FaVideo, FaImage } from "react-icons/fa6";
-import Link from "next/link";
 import { Providers } from "../Provider";
 import moment from "moment";
 import { CiSearch } from "react-icons/ci";
-import { SeparatorHorizontal } from "lucide-react";
 import NavLink from "./NavLink";
 
 export default function SideBar() {
@@ -23,6 +21,7 @@ export default function SideBar() {
   const user = useSelector((state) => state?.user);
 
   useEffect(() => {
+    console.log("conversation");
     const cachedConversations =
       JSON.parse(localStorage.getItem("conversations")) || [];
     setAllUser(cachedConversations);
@@ -79,19 +78,15 @@ export default function SideBar() {
       <Providers>
         <div className="w-full h-screen bg-gray-50">
           <div className="w-full">
-            <div className="h-16 bg-white flex flex-col justify-center items-start px-4">
+            <div className="h-36 bg-white flex flex-col justify-center items-start px-4">
               <div className="text-xl sm:text-2xl ont-bold font-roboto mt-4 text-black">
                 Message
                 <p className="text-xs sm:text-sm font-roboto font-normal text-slate-500">
                   {moment().format("dddd")},{moment().format(" Do MMMM, YYYY")}
                 </p>
               </div>
-            </div>
-
-            <div className="bg-white h-[calc(100vh-4rem)] px-2 py-4 overflow-y-auto scrollbar-none">
-              {/* Search Bar */}
               <div className="flex justify-center items-center mt-4 mx-1 sm:mx-4 h-5 sm:h-12 bg-gray-100 rounded-2xl">
-                <div className="ml-3 w-8 flex justify-center items-center">
+                <div className="w-8 flex justify-center items-center">
                   <CiSearch size={20} className="sm:text-lg" />
                 </div>
                 <input
@@ -103,6 +98,10 @@ export default function SideBar() {
                 />
                 <p className="mr-5 text-xs sm:text-sm text-gray-600">/F</p>
               </div>
+            </div>
+
+            <div className="bg-white h-[calc(100vh-4rem)] px-2 py-4 overflow-y-auto scrollbar-none">
+              {/* Search Bar */}
 
               {/* No Users Message */}
               {allUser.length === 0 && (
@@ -130,10 +129,11 @@ export default function SideBar() {
                 const messageDate = moment(createdAt);
 
                 return (
+                  <div >
                   <NavLink
                     href={"/" + conv?.userDetails?._id}
                     key={conv?._id}
-                    className="flex items-center mt-3 sm:mt-[6px] gap-2 sm:gap-3 py-3 px-2 rounded hover:bg-slate-100 border-b-2 border-b-gray-200 cursor-pointer"
+                    className="flex items-center mt-2 gap-2 sm:gap-3 py-3 px-2 rounded hover:bg-slate-100 border-b-2 border-b-gray-200 cursor-pointer"
                   >
                     <Avatar
                       imageUrl={conv?.userDetails?.profile_pic}
@@ -174,6 +174,7 @@ export default function SideBar() {
                       </p>
                     )}
                   </NavLink>
+                  </div>
                 );
               })}
             </div>

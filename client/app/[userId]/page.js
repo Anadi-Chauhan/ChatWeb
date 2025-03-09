@@ -3,14 +3,13 @@
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { BiDotsVertical } from "react-icons/bi";
 import { MdOutlineArrowBackIosNew } from "react-icons/md";
 import { RxCross2 } from "react-icons/rx";
 import { MdSend } from "react-icons/md";
 import Link from "next/link";
 import Image from "next/image";
 import moment from "moment";
-import { IoMdVideocam } from "react-icons/io";
+import { IoMdPersonAdd, IoMdVideocam } from "react-icons/io";
 import { IoCheckmarkDone } from "react-icons/io5";
 import { PiPhoneCallFill } from "react-icons/pi";
 import { MdCallEnd } from "react-icons/md";
@@ -30,6 +29,7 @@ import EmojiPickerComponet from "../MyComponents/MessagePageComponents/EmojiPick
 import IVSender from "../MyComponents/MessagePageComponents/IVSender";
 import VoiceMessage from "../MyComponents/VoiceMessage";
 import NoChat from "../MyComponents/MessagePageComponents/NoChat";
+import { toast } from "sonner";
 
 function openDB() {
   return new Promise((resolve, reject) => {
@@ -72,6 +72,17 @@ async function saveMessages(userID, messages) {
     request.onerror = (event) => reject(event.target.error);
   });
 }
+
+
+export function deleteDBOnLogout() {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.deleteDatabase("ChatDB");
+
+    request.onsuccess = () => resolve("Database deleted successfully.");
+    request.onerror = (event) => reject(`Error deleting database: ${event.target.error}`);
+  });
+}
+
 export default function MessagePage({ background }) {
   const params = useParams();
   const socketConnection = useSelector(
@@ -316,6 +327,16 @@ export default function MessagePage({ background }) {
     }
   };
 
+  const handleSendFriendRequest = () => {
+    if (socketConnection) {
+      socketConnection.emit("reqSender",{
+        sender: user?._id,
+        reciever: params.userId
+      })
+      toast("SENt")
+    }
+  }
+
   useEffect(() => {
     fetchUserDetails();
   }, []);
@@ -464,13 +485,13 @@ export default function MessagePage({ background }) {
                 </p>
               </div>
             </div>
-            <div className="flex gap-4">
+            <div className="flex mr-10" title="Video Call">
               <button className="hidden sm:block">
-                <IoMdVideocam onClick={handleCallUser} size={20} />
+                <IoMdVideocam onClick={handleCallUser} size={25} />
               </button>
-              <button className="cursor-pointer hover:text-primary">
-                <BiDotsVertical size={20} />
-              </button>
+              {/* <button onClick={handleSendFriendRequest} className="cursor-pointer hover:text-primary">
+              <IoMdPersonAdd size={20} />
+              </button> */}
             </div>
           </header>
           <section className="lg:h-[calc(88vh)] sm:h-[calc(100vh-128px)] p-2 sm:p-3 overflow-hidden relative bg-white ">

@@ -9,14 +9,13 @@ import { BiRightArrowAlt } from "react-icons/bi";
 import { setToken } from "@/app/redux/userSlice";
 import Link from "next/link";
 
-export default function LoginForm({setShowRegister}) {
+export default function LoginForm({ setShowRegister }) {
   const [data, setData] = useState({
     email: "",
     password: "",
   });
   const router = useRouter();
   const dispatch = useDispatch();
-  
 
   const onHandleChange = (e) => {
     const { name, value } = e.target;
@@ -32,7 +31,7 @@ export default function LoginForm({setShowRegister}) {
     try {
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/login`,
-        { email : data.email },
+        { email: data.email },
         { withCredentials: true }
       );
 
@@ -49,7 +48,6 @@ export default function LoginForm({setShowRegister}) {
       }
     } catch (error) {}
   };
-
   return (
     <>
       <div className="flex mr-16 items-center gap-10 min-h-screen  justify-center">
@@ -63,7 +61,7 @@ export default function LoginForm({setShowRegister}) {
               <p className="text-sm mt-2">
                 Don&apos;t have an account?
                 <button
-                  onClick={()=>setShowRegister(false)}
+                  onClick={() => setShowRegister(false)}
                   className="text-red-400 hover:underline flex items-center"
                 >
                   Create your account here <BiRightArrowAlt size={20} />
@@ -107,12 +105,22 @@ export default function LoginForm({setShowRegister}) {
                 </button>
               </div>
               <div>
-              <p className="text-xs" >By signing up, you agree to our <Link href="/" className="text-blue-500 hover:text-blue-300" > Terms of Service</Link> & <Link href="/" className="text-blue-500 hover:text-blue-300" >Privacy Policy</Link></p>
+                <p className="text-xs">
+                  By signing up, you agree to our{" "}
+                  <Link href="/" className="text-blue-500 hover:text-blue-300">
+                    {" "}
+                    Terms of Service
+                  </Link>{" "}
+                  &{" "}
+                  <Link href="/" className="text-blue-500 hover:text-blue-300">
+                    Privacy Policy
+                  </Link>
+                </p>
               </div>
             </form>
-            </div>
           </div>
         </div>
+      </div>
     </>
   );
 }

@@ -11,12 +11,13 @@ const uploadFile = async (file) => {
       method: 'POST',
       body: formData
     });
+    console.log("DONE")
 
     // Check if the response is OK (status code 2xx)
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-
+    console.log("DONE")
     const responseData = await response.json();
     return responseData;
 

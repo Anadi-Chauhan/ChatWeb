@@ -186,10 +186,10 @@ export default function Home() {
               Infinity-Chat.org - Free Chat Rooms
             </Link>
           </p>
-          <p className="cursor-pointer hover:text-blue-500">Terms of Service</p>
-          <p className="cursor-pointer hover:text-blue-500">Privacy Policy</p>
-          <p className="cursor-pointer hover:text-blue-500">Contact us</p>
-          <p className="cursor-pointer hover:text-blue-500">Language</p>
+          <Link href="/terms" className="cursor-pointer hover:text-blue-500">Terms of Service</Link>
+          <Link href="/terms" className="cursor-pointer hover:text-blue-500">Privacy Policy</Link>
+          <Link href="/support" className="cursor-pointer hover:text-blue-500">Contact us</Link>
+          <Link href="/support" className="cursor-pointer hover:text-blue-500">Language</Link>
         </div>
       </div>
     </div>

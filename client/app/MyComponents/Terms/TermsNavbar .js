@@ -7,33 +7,33 @@ export default function TermsNavbar() {
     <div>
       <Navbar />
     </div>
-      <div className="ml-48" >
+      {/* <div className="ml-48 mt-10" >
         <div className="flex justify-around text-2xl font-roboto" >
           <div>
             <Link href="/">
-              <p>Chat Guide</p>
+              <p className="px-6 py-3 text-white rounded-lg hover:bg-[#636957] hover:bg-opacity-35 transition duration-300" >Chat Guide</p>
             </Link>
           </div>{" "}
           <div>
             <Link href="/">
-              <p>Forums</p>
+              <p className="px-6 py-3 text-white rounded-lg hover:bg-[#636957] hover:bg-opacity-35 transition duration-300">Forums</p>
             </Link>
           </div>{" "}
           <div>
             <Link href="/">
-              <p>Safety</p>
+              <p className="px-6 py-3 text-white rounded-lg hover:bg-[#636957] hover:bg-opacity-35 transition duration-300">Safety</p>
             </Link>
           </div>{" "}
           <div>
             <Link href="/">
-              <p>Emoticoins</p>
+              <p className="px-6 py-3 text-white rounded-lg hover:bg-[#636957] hover:bg-opacity-35 transition duration-300">Emoticoins</p>
             </Link>
           </div>
-        </div>
-        <div className="ml-32 text-3xl font-roboto font-bold mt-16" >
+        </div> */}
+        <div className="text-3xl font-roboto font-bold mt-6 flex justify-center items-center mr-20" >
             TERMS OF USE
         </div>
-      </div>
+      {/* </div> */}
     </>
   );
 }

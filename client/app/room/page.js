@@ -7,6 +7,7 @@ export default function NewXX() {
     <div>
         <GuestForm />
       </div>
+      
     </>
   );
 }

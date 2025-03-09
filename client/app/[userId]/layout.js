@@ -16,7 +16,7 @@ export default function Layout({ children }) {
   const [showMessage, setShowMessage] = useState(false);
   const params = useParams();
   const [openUserData, setOpenUserData] = useState();
-  const [backgroundChange,setBackgroundChange] = useState("/ChatBg3.jpg")
+  const [backgroundChange, setBackgroundChange] = useState("/ChatBg3.jpg");
   const isValidHex = (str) => /^[a-fA-F0-9]{24}$/.test(str);
   {
     if (isValidHex(params.userId)) {
@@ -41,10 +41,12 @@ export default function Layout({ children }) {
                 <div className="relative hidden sm:block">
                   {" "}
                   {/* Hidden on smaller screens */}
-                  <IoIosNotificationsOutline
-                    size={25}
-                    className="cursor-pointer text-gray-600 hover:text-gray-800"
-                  />
+                  <button onClick={() => setShowRequest(!showRequest)}>
+                    <IoIosNotificationsOutline
+                      size={25}
+                      className="cursor-pointer text-gray-600 hover:text-gray-800"
+                    />
+                  </button>
                 </div>
                 <div className="relative ">
                   <button
@@ -58,16 +60,16 @@ export default function Layout({ children }) {
               </div>
             </div>
             <div className="relative grid grid-cols-[300px,1fr]  justify-center items-center overflow-hidden">
-            <div
-            className={`h-full overflow-hidden
+              <div
+                className={`h-full overflow-hidden
                 ${
                   showMessage
                     ? "hidden max-[390px]:hidden"
                     : "block max-[390px]:block"
                 }`}
-          >
-            <SideBar />
-          </div>
+              >
+                <SideBar />
+              </div>
               <div
                 className={`h-full overflow-hidden flex max-[390px]:hidden 
                 ${

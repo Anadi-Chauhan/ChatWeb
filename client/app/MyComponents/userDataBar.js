@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import Avatar from "../Components/helpers/Avatar";
 import { useSelector } from "react-redux";
 import { BsPuzzle } from "react-icons/bs";
+import Link from "next/link";
 
 export default function UserSideBaar({ onClose }) {
   const [quote, setQuote] = useState();
@@ -46,10 +47,10 @@ export default function UserSideBaar({ onClose }) {
           <h1 className="font-bold text-2xl">{user?.name}</h1>
         </div>
         <div className="p-5">
-        <button className="flex items-center gap-2 px-6 py-2 text-lg font-medium border-2 border-blue-500 text-blue-800 rounded-lg transition-all duration-300 hover:bg-blue-500 hover:text-white active:scale-95">
+        <Link href="/profile" className="flex items-center gap-2 px-6 py-2 text-lg font-medium border-2 border-blue-500 text-blue-800 rounded-lg transition-all duration-300 hover:bg-blue-500 hover:text-white active:scale-95">
           <span>Complete Your Profile</span>
           <BsPuzzle size={25} />
-        </button>
+        </Link>
           <h2 className="font-medium text-lg mt-5">Today&apos;s Quote</h2>
           <div className="mt-2">
             <h3 className="font-semibold">{quote?.quote}</h3>

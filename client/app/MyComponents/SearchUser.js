@@ -56,11 +56,11 @@ export default function SearchUser({ onClose }) {
 </div>
 
 {openModel && (
-  <div className="fixed inset-0 bg-opacity-0 z-10 flex justify-center items-center">
+  <div className="fixed inset-0 bg-opacity-0 z-20 flex justify-center items-center">
     <button onClick={() => setOpenModel(false)} className="absolute top-4 right-4 text-red-600">
       <ImCross size={25} />
     </button>
-    <div className="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg mx-auto mt-8 bg-white shadow-lg rounded-lg">
+    <div className="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg mx-auto mt-8 z-20 bg-white shadow-lg rounded-lg">
       <div className="h-[70vh] overflow-x-hidden overflow-y-scroll scrollbar-none mt-2 w-full p-4">
         {searchUser.length === 0 && !loading && (
           <p className="text-center text-slate-500">No User Found!</p>
